@@ -3,3 +3,6 @@
 
 # pycharm config
 InteractiveOptimisationAlgorithms/.idea
+
+# python
+InteractiveOptimisationAlgorithms/**/*.pyc
