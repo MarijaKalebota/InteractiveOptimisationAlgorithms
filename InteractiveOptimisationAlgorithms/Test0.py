@@ -165,6 +165,8 @@ class ZlatniRez:
 class HookeJeeves:
     @staticmethod
     def provediHookeJeeves(f, tocka, pomak, factor, epsilon, printMe):
+        #f = open('HookeJeevesOutput.txt', 'w')
+        outputString = ""
         xb = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
         xp = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
         xn = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
@@ -190,7 +192,7 @@ class HookeJeeves:
                     currentMinimum = plus
                 if (f.valueAt(minus) < f.valueAt(currentMinimum)):
                     currentMinimum = minus
-                xn = currentMinimum;
+                xn = currentMinimum
 
             if (printMe):
                 print "xb = "
@@ -214,16 +216,27 @@ class HookeJeeves:
                 xn = Matrix.copyPoint(xp)
 
             iteracija = iteracija + 1
+            outputString = outputString + str(xn.getElement(0,0))
+            for i in range(1, xn.getColsCount()):
+                outputString = outputString + " " + str(xn.getElement(0,i))
+            outputString = outputString + "\n"
         print "Konacno rjesenje Hooke-Jeevesa za pocetnu tocku " + str(tocka.getElement(0,0)) + " je " + str(xb.getElements())
+        output = open('HookeJeevesOutput.txt', 'w')
+        output.write(outputString)
         return xb
 
 #main
-f3OneDimensional1 = F3OneDimensional()
-f3OneDimensional12 = F3OneDimensional()
-elements = np.array([[10]])
-tocka1 = Matrix(1, 1, elements)
-tocka12 = Matrix.copyPoint(tocka1)
-interval = ZlatniRez.provediZlatniRezSPocTockom(tocka1.getElement(0,0), 1E-6, f3OneDimensional1, True)
-rjesenjeHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, tocka12, 1, 0.5, 1E-6, True)
-#print tocka1.getRowsCount()
-#Matrix.printMatrix(rjesenjeHookeJeeves)
+
+def main():
+    f3OneDimensional1 = F3OneDimensional()
+    f3OneDimensional12 = F3OneDimensional()
+    elements = np.array([[10]])
+    tocka1 = Matrix(1, 1, elements)
+    tocka12 = Matrix.copyPoint(tocka1)
+    interval = ZlatniRez.provediZlatniRezSPocTockom(tocka1.getElement(0,0), 1E-6, f3OneDimensional1, True)
+    rjesenjeHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, tocka12, 1, 0.5, 1E-6, True)
+    #print tocka1.getRowsCount()
+    #Matrix.printMatrix(rjesenjeHookeJeeves)
+
+if (__name__ == '__main__'):
+    main()
