@@ -111,3 +111,46 @@ class F3OneDimensional(AbstractFunction):
 
     def valueAtDerivativeByX2ThenX2(self, point):
         return 0
+
+class F1RosenbrockBananaFunction(AbstractFunction):
+    def __init__(self):
+        #super.__init__()
+        AbstractFunction.__init__(self)
+
+    def valueAt(self, *args):
+        if isinstance(args[0], Matrix):
+            return self.__valueAtMatrix(*args)
+        else:
+            print "Poslani argument mora biti tipa Matrix"
+
+    def __valueAtMatrix(self, point):
+        if (point.getColsCount() != 2):
+            print "Funckija prima dva parametra."
+        AbstractFunction.increment(self)
+        return 100 * (point.getElement(0, 1) - point.getElement(0, 0)**2)**2 + (1 - point.getElement(0, 0))**2
+
+
+
+    def valueAtDerivativeByX1(self, point):
+        return (-400) * (point.getElement(0, 1) - point.getElement(0, 0)**2) * point.getElement(0,0) + 2 * point.getElement(0, 0) - 2
+
+
+    def valueAtDerivativeByX2(self, point):
+        return 200 * (point.getElement(0, 1) - point.getElement(0, 0)**2)
+
+
+    def valueAtDerivativeByX1ThenX1(self, point):
+        #return (800 * Math.pow(point.getElement(0, 0), 2) - 2);
+        return 1200 * point.getElement(0, 0)**2 - 400 * point.getElement(0, 1) + 2
+
+
+    def valueAtDerivativeByX1ThenX2(self, point):
+        return -400 * point.getElement(0, 0)
+
+
+    def valueAtDerivativeByX2ThenX1(self, point):
+        return -400 * point.getElement(0, 0)
+
+
+    def valueAtDerivativeByX2ThenX2(self, point):
+        return 200
