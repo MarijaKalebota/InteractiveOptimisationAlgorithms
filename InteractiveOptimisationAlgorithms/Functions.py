@@ -76,6 +76,7 @@ class F3OneDimensional(AbstractFunction):
         # elif isinstance(args[0], Matrix):
         #     return self.__valueAtMatrix(*args)
         if isinstance(args[0], Matrix):
+            #increment()
             return self.__valueAtMatrix(*args)
         else:
             return self.__valueAtPoint(*args)

@@ -1,9 +1,20 @@
-import numpy as np
 #import Matrix
 from Matrix import *
 #import Functions
 from Functions import *
-
+import sys
+import numpy as np
+import scipy as sp
+import sklearn
+from sklearn.preprocessing import PolynomialFeatures
+import matplotlib.pyplot as plt
+#%pylab inline
+#from ipywidgets import interact, interactive, fixed, interact_manual
+import ipywidgets as widgets
+from IPython.utils.py3compat import annotate
+from IPython.display import display
+#from ipywidgets import FloatSlider
+from ipywidgets import *
 #class IFunction:
 
 '''
@@ -11,6 +22,106 @@ def f(x):
     #return Math.pow(point.getElement(0, 0) - 4, 2) + 4 * Math.pow(point.getElement(0, 1) - 2, 2);
     return (x - 3)**2
 '''
+
+class Iteration():
+    def __init__(self, iterationNumber, yValue, xValue, additionalInfo):
+        self.iterationNumber = iterationNumber
+        self.yValue = yValue
+        self.xValue = xValue
+        self.additionalInfo = additionalInfo
+
+class Logger(object):
+    def __init__(self, f):
+        self.f = f
+        self.iterations = []
+
+    def addIteration(self, iteration):
+        self.iterations.append(iteration)
+
+    def getIterations(self):
+        return self.iterations
+
+    def getIteration(self, indexOfIterationToGet):
+        if(len(self.iterations) >= indexOfIterationToGet):
+            return "Index out of range"
+        else:
+            return self.iterations[indexOfIterationToGet]
+
+    def getFunction(self):
+        return self.f;
+
+    def printLogToFile(self, file):
+        #TODO
+        return
+
+    def printLogToOutput(self):
+        #TODO
+        '''
+        for iteration in self.iterations:
+            for element in iteration.additionalInfo:
+                if type(element[1] )
+        outputString = outputString + str(xn.getElement(0, 0))
+        for i in range(1, xn.getColsCount()):
+            outputString = outputString + " " + str(xn.getElement(0, i))
+        outputString = outputString + "\n"
+
+        print "Konacno rjesenje Hooke-Jeevesa za pocetnu tocku " + str(tocka.getElement(0, 0)) + " je " + str(
+            xb.getElements())
+        output = open('HookeJeevesOutput.txt', 'w')
+        output.write(outputString)
+        '''
+        return
+
+class Drawer:
+    def __init__(self, logger):
+        self.logger = logger
+
+    def drawAnimation(self):
+        #inputFile = open('InteractiveOptimisationAlgorithms/HookeJeevesOutput.txt', 'r')
+        playMaxOfInterval = 0
+        poljeXVrijednosti = []
+        poljeYVrijednosti = []
+        for iteration in self.logger.getIterations():
+            playMaxOfInterval = playMaxOfInterval + 1
+            # stvori polje ovih brojeva
+            poljeXVrijednosti.append(iteration.xValue)
+            poljeYVrijednosti.append(iteration.yValue)
+
+        w = widgets.IntSlider(min=0, max=playMaxOfInterval - 1, step=1, value=0)
+        play = widgets.Play(
+            # interval=3,
+            value=0,
+            min=0,
+            max=playMaxOfInterval,
+            step=1,
+            description="Press play",
+            disabled=False
+        )
+        # slider = widgets.IntSlider()
+        widgets.jslink((play, 'value'), (w, 'value'))
+        #widgets.HBox([play, w])
+        def f(poljeXVrijednosti, poljeYVrijednosti, index):
+            funkcija = self.logger.getFunction()
+            #yVrijednost = funkcija.valueAt(poljeBrojeva[index])
+            plt.clf()
+            plt.close('all')
+            plt.figure(index)
+            plt.axis([0.0, 15.0, -5.0, 30.0])
+            #TODO maknuti hardkodirani axis - postaviti ga na (min(x) - relativni odmak),(max(x) + relativni odmak), isto za y
+            ax = plt.gca()
+            ax.set_autoscale_on(False)
+
+            X = np.linspace(0.0, 13.0, num=10)
+            #TODO ovaj linspace staviti na iste vrijednosti kao i axis
+            Y = [funkcija.valueAt(x) for x in X]
+
+            plt.plot(X, Y, 'b')
+            plt.plot(poljeXVrijednosti[index], poljeYVrijednosti[index], 'ro')
+            plt.show()
+
+        interact(f, poljeXVrijednosti=fixed(poljeXVrijednosti), poljeYVrijednosti = fixed(poljeYVrijednosti), index=w)
+        display(play)
+
 
 class Unimodal:
     @staticmethod
@@ -170,11 +281,13 @@ class HookeJeeves:
         xb = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
         xp = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
         xn = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
-        iteracija = 1
+        iteracija = 0
+        logger = Logger(f)
         while (pomak > epsilon):
+            additionalInfo = {}
             #nadi xn
             if (printMe):
-                print "Iteracija: " + str(iteracija)
+                print "Iteracija: " + str(iteracija + 1)
             for i in range(xn.getColsCount()):
                 plus = Matrix.copyPoint(xn)
                 #TODO
@@ -203,6 +316,22 @@ class HookeJeeves:
                 Matrix.printMatrix(xn)
                 print "Pomak = " + str(pomak)
 
+            xbDescription = "xb - Bazna tocka algoritma Hooke-Jeeves"
+            xpDescription = "xp - Tocka pretrazivanja algoritma Hooke-Jeeves u trenutnoj iteraciji. xp' = 2*xn + xb"
+            xnDescription = "xn - Nova tocka algoritma Hooke-Jeeves, izracunata (dobivena pretrazivanjem) u trenutnoj iteraciji, Ona u sljedecoj iteraciji postaje bazna tocka."
+
+            xbTuple = (xb, xbDescription)
+            xpTuple = (xp, xpDescription)
+            xnTuple = (xn, xnDescription)
+
+            additionalInfo["xb"] = xbTuple
+            additionalInfo["xp"] = xpTuple
+            additionalInfo["xn"] = xnTuple
+
+            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additionalInfo)
+            currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
+            logger.addIteration(currentIteration)
+
             if (f.valueAt(xn) < f.valueAt(xb)):
                 xp = Matrix.subtract(Matrix.scalarMultiply(xn, 2), xb)
 
@@ -223,7 +352,7 @@ class HookeJeeves:
         print "Konacno rjesenje Hooke-Jeevesa za pocetnu tocku " + str(tocka.getElement(0,0)) + " je " + str(xb.getElements())
         output = open('HookeJeevesOutput.txt', 'w')
         output.write(outputString)
-        return xb
+        return xb, logger
 
 #main
 
@@ -234,7 +363,9 @@ def main():
     tocka1 = Matrix(1, 1, elements)
     tocka12 = Matrix.copyPoint(tocka1)
     interval = ZlatniRez.provediZlatniRezSPocTockom(tocka1.getElement(0,0), 1E-6, f3OneDimensional1, True)
-    rjesenjeHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, tocka12, 1, 0.5, 1E-6, True)
+    #rjesenjeHookeJeeves, loggerHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, tocka12, 1, 0.99, 1E-6, True)
+    rjesenjeHookeJeeves, loggerHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, tocka12, 1, 0.5, 1E-6, True)
+
     #print tocka1.getRowsCount()
     #Matrix.printMatrix(rjesenjeHookeJeeves)
 
