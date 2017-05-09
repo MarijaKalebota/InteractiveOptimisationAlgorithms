@@ -77,19 +77,17 @@ class Drawer:
         self.logger = logger
 
     def drawAnimation(self):
-        #inputFile = open('InteractiveOptimisationAlgorithms/HookeJeevesOutput.txt', 'r')
         playMaxOfInterval = 0
-        poljeXVrijednosti = []
-        poljeYVrijednosti = []
+        poljeX = []
+        poljeY = []
         for iteration in self.logger.getIterations():
             playMaxOfInterval = playMaxOfInterval + 1
             # stvori polje ovih brojeva
-            poljeXVrijednosti.append(iteration.xValue)
-            poljeYVrijednosti.append(iteration.yValue)
+            poljeX.append(iteration.xValue)
+            poljeY.append(iteration.yValue)
 
         w = widgets.IntSlider(min=0, max=playMaxOfInterval - 1, step=1, value=0)
         play = widgets.Play(
-            # interval=3,
             value=0,
             min=0,
             max=playMaxOfInterval,
@@ -97,12 +95,9 @@ class Drawer:
             description="Press play",
             disabled=False
         )
-        # slider = widgets.IntSlider()
         widgets.jslink((play, 'value'), (w, 'value'))
-        #widgets.HBox([play, w])
-        def f(poljeXVrijednosti, poljeYVrijednosti, index):
+        def f(poljeX, poljeY, index):
             funkcija = self.logger.getFunction()
-            #yVrijednost = funkcija.valueAt(poljeBrojeva[index])
             plt.clf()
             plt.close('all')
             plt.figure(index)
@@ -116,10 +111,10 @@ class Drawer:
             Y = [funkcija.valueAt(x) for x in X]
 
             plt.plot(X, Y, 'b')
-            plt.plot(poljeXVrijednosti[index], poljeYVrijednosti[index], 'ro')
+            plt.plot(poljeX[index], poljeY[index], 'ro')
             plt.show()
 
-        interact(f, poljeXVrijednosti=fixed(poljeXVrijednosti), poljeYVrijednosti = fixed(poljeYVrijednosti), index=w)
+        interact(f, poljeX=fixed(poljeX), poljeY = fixed(poljeY), index=w)
         display(play)
 
 

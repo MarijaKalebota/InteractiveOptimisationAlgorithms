@@ -23,7 +23,7 @@ class Matrix:
         self.numberOfRows = rowNumber
         self.numberOfColumns = columnNumber
         self.elements = elements
-        print self.numberOfRows
+        #print self.numberOfRows
 
 
     def getElements(self):
