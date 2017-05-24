@@ -96,11 +96,11 @@ class Drawer:
             disabled=False
         )
         widgets.jslink((play, 'value'), (w, 'value'))
-        def f(poljeX, poljeY, index):
+        def f(poljeX, poljeY, iteration):
             funkcija = self.logger.getFunction()
             plt.clf()
             plt.close('all')
-            plt.figure(index)
+            plt.figure(iteration)
             plt.axis([0.0, 15.0, -5.0, 30.0])
             #TODO maknuti hardkodirani axis - postaviti ga na (min(x) - relativni odmak),(max(x) + relativni odmak), isto za y
             ax = plt.gca()
@@ -111,10 +111,10 @@ class Drawer:
             Y = [funkcija.valueAt(x) for x in X]
 
             plt.plot(X, Y, 'b')
-            plt.plot(poljeX[index], poljeY[index], 'ro')
+            plt.plot(poljeX[iteration], poljeY[iteration], 'ro')
             plt.show()
 
-        interact(f, poljeX=fixed(poljeX), poljeY = fixed(poljeY), index=w)
+        interact(f, poljeX=fixed(poljeX), poljeY = fixed(poljeY), iteration=w)
         display(play)
 
 
@@ -270,7 +270,7 @@ class ZlatniRez:
 
 class HookeJeeves:
     @staticmethod
-    def provediHookeJeeves(f, tocka, pomak, factor, epsilon, printMe):
+    def run(f, tocka, pomak, factor, epsilon, printMe):
         #f = open('HookeJeevesOutput.txt', 'w')
         outputString = ""
         xb = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
@@ -359,7 +359,7 @@ def main():
     tocka12 = Matrix.copyPoint(tocka1)
     interval = ZlatniRez.provediZlatniRezSPocTockom(tocka1.getElement(0,0), 1E-6, f3OneDimensional1, True)
     #rjesenjeHookeJeeves, loggerHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, tocka12, 1, 0.99, 1E-6, True)
-    rjesenjeHookeJeeves, loggerHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, tocka12, 1, 0.5, 1E-6, True)
+    rjesenjeHookeJeeves, loggerHookeJeeves = HookeJeeves.run(f3OneDimensional12, tocka12, 1, 0.5, 1E-6, True)
 
     #print tocka1.getRowsCount()
     #Matrix.printMatrix(rjesenjeHookeJeeves)
