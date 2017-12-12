@@ -95,6 +95,20 @@ class Drawer:
             description="Press play",
             disabled=False
         )
+        nextButton = widgets.Button(description="Next")
+        previousButton = widgets.Button(description="Previous")
+
+        def on_nextButton_clicked(x):
+            if(play.value < play.max):
+                play.value += 1
+
+        def on_previousButton_clicked(x):
+            if(play.value > 0):
+                play.value -= 1
+
+        nextButton.on_click(on_nextButton_clicked)
+        previousButton.on_click(on_previousButton_clicked)
+
         widgets.jslink((play, 'value'), (w, 'value'))
         def f(poljeX, poljeY, iteration):
             funkcija = self.logger.getFunction()
@@ -102,11 +116,13 @@ class Drawer:
             plt.close('all')
             plt.figure(iteration)
             plt.axis([0.0, 15.0, -5.0, 30.0])
+            #plt.axis([0.0, 6.0, -0.5, 4.0])
             #TODO maknuti hardkodirani axis - postaviti ga na (min(x) - relativni odmak),(max(x) + relativni odmak), isto za y
             ax = plt.gca()
             ax.set_autoscale_on(False)
 
             X = np.linspace(0.0, 13.0, num=10)
+            #X = np.linspace(0.0, 6.0, num=10)
             #TODO ovaj linspace staviti na iste vrijednosti kao i axis
             Y = [funkcija.valueAt(x) for x in X]
 
@@ -116,6 +132,9 @@ class Drawer:
 
         interact(f, poljeX=fixed(poljeX), poljeY = fixed(poljeY), iteration=w)
         display(play)
+
+        display(previousButton)
+        display(nextButton)
 
 
 class Unimodal:
