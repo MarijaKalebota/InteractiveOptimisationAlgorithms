@@ -36,6 +36,11 @@ class IFunction(object):
     def getNumberOfCalls(self):
         raise NotImplementedError
 
+class IAlgorithm(object):
+
+    def run(self, initialPoint):
+        raise NotImplementedError
+
 class AbstractFunction(IFunction):
 
     def __init__(self):
@@ -155,3 +160,60 @@ class F1RosenbrockBananaFunction(AbstractFunction):
 
     def valueAtDerivativeByX2ThenX2(self, point):
         return 200
+
+class F4xcosx(AbstractFunction):
+
+    '''public F3OneDimensional() {
+        super();
+    }
+    '''
+
+    def __init__(self):
+        # super.__init__()
+        AbstractFunction.__init__(self)
+
+
+    def valueAt(self, *args):
+        # if isinstance(args[0], np.float64):
+        #     return self.__valueAtPoint(*args)
+        # elif isinstance(args[0], int):
+        #     return self.__valueAtPoint(*args)
+        # elif isinstance(args[0], Matrix):
+        #     return self.__valueAtMatrix(*args)
+        if isinstance(args[0], Matrix):
+            # increment()
+            return self.__valueAtMatrix(*args)
+        else:
+            return self.__valueAtPoint(*args)
+
+    def __valueAtPoint(self, point):
+        AbstractFunction.increment(self)
+        return point * np.cos(point)
+
+    def __valueAtMatrix(self, point):
+        if (point.getColsCount() != 1 and point.getRowsCount() != 1):
+            raise ValueError("Tocka mora biti u jednodimenzijskom prostoru.")
+        return F4xcosx.__valueAtPoint(self, point.getElement(0, 0))
+
+    '''
+    def valueAt(self, point, t):
+        return 0
+    '''
+
+    def valueAtDerivativeByX1(self, point):
+        return 0
+
+    def valueAtDerivativeByX2(self, point):
+        return 0
+
+    def valueAtDerivativeByX1ThenX1(self, point):
+        return 0
+
+    def valueAtDerivativeByX1ThenX2(self, point):
+        return 0
+
+    def valueAtDerivativeByX2ThenX1(self, point):
+        return 0
+
+    def valueAtDerivativeByX2ThenX2(self, point):
+        return 0
