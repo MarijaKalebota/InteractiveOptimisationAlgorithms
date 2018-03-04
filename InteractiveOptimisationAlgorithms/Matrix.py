@@ -39,7 +39,7 @@ class Matrix:
         for i in range(a.getRowsCount()):
             outputString += "[ "
             for j in range(a.getColsCount()):
-                #TODO gornji ili donji?
+                #TODO upper or lower?
                 # outputString += a.elements[i][j]
                 outputString += str(a.elements[i,j])
                 outputString += "\t"
@@ -57,75 +57,6 @@ class Matrix:
         self.elements = np.array(B.getElements())
         return B
 
-
-
-    '''
-    public void readFromTxt(String pathToFile) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(pathToFile));
-        try {
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-            /*//String[] matrixRow = new String[];
-            String[] matrixRowStringArray = line.trim().split("\\s+");
-            double[] rowElements = new double[matrixRowStringArray.length];
-            for(int i = 0; i < matrixRowStringArray.length; i++){
-                rowElements[i] = Double.parseDouble(matrixRowStringArray[i]);
-            }*/
-            List<double[]> elementsArrayList = new ArrayList<double[]>();
-            while (line != null) {
-                //String[] matrixRow = new String[];
-                String[] matrixRowStringArray = line.trim().split("\\s+");
-                double[] rowElements = new double[matrixRowStringArray.length];
-                for(int i = 0; i < matrixRowStringArray.length; i++){
-                    rowElements[i] = Double.parseDouble(matrixRowStringArray[i]);
-                }
-                //imam redak [[el][el][el][el][el]]
-                //double[][] arr = Arrays.copyOf(this.elements, this.elements.length + 1);
-                //arr[this.elements.length] = rowElements;
-                //this.elements = arr;
-
-                elementsArrayList.add(rowElements);
-
-
-                line = br.readLine();
-            }
-
-            elementsArrayList.toArray(this.elements);
-
-        } finally {
-            br.close();
-        }
-    }
-
-    public void writeToTxt(String pathToFile) throws IOException{
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < numberOfRows; i++){
-            for(int j = 0; j < numberOfColumns; j++){
-                sb.append(this.elements[i][j]);
-                sb.append("\t");
-            }
-            sb.append("\n");
-
-        }
-        //String everything = sb.toString();
-
-        Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream("matrix.out"), "UTF-8"));
-        writer.write(sb.toString());
-        writer.close();
-
-    }
-
-    public void writeToStdout(){
-        for(int i = 0; i < numberOfRows; i++){
-            for(int j = 0; j < numberOfColumns; j++){
-                System.out.print(this.elements[i][j]);
-                System.out.print("\t");
-            }
-            System.out.print("\n");
-        }
-    }
-    '''
 
     def equals(self, obj):
         if (self == obj):
@@ -149,11 +80,11 @@ class Matrix:
 
     def getElement(self, row, column):
         if row >= self.getRowsCount() or column >= self.getColsCount():
-            #throw new IndexOutOfBoundsException("Uneseni indeks je izvan opsega matrice.");
-            print "Uneseni indeks je izvan opsega matrice."
+            #throw new IndexOutOfBoundsException("Given index is outside matrix bounds.");
+            print "Given index is outside matrix bounds."
         if (row < 0 or column < 0):
-            #throw new IndexOutOfBoundsException("Indeks mora biti pozitivan broj.");
-            print "Indeks mora biti pozitivan broj."
+            #throw new IndexOutOfBoundsException("Index needs to be a positive number.");
+            print "Index needs to be a positive number."
         test = self.elements[row,column]
         return self.elements[row,column]
 
@@ -161,11 +92,11 @@ class Matrix:
 
     def setElement(self, row, column, value):
         if (row >= self.numberOfRows or column >= self.numberOfColumns):
-            #throw new IndexOutOfBoundsException("Uneseni indeks je izvan opsega matrice.");
-            print "Uneseni indeks je izvan opsega matrice."
+            # throw new IndexOutOfBoundsException("Given index is outside matrix bounds.");
+            print "Given index is outside matrix bounds."
         if (row < 0 or column < 0):
-            #throw new IndexOutOfBoundsException("Indeks mora biti pozitivan broj.");
-            print "Indeks mora biti pozitivan broj."
+            # throw new IndexOutOfBoundsException("Index needs to be a positive number.");
+            print "Index needs to be a positive number."
         self.elements[row, column] = value
         return self
 
@@ -179,10 +110,10 @@ class Matrix:
         return self.numberOfColumns
 
     @staticmethod
-    #TODO assert a i b?
+    #TODO assert a and b?
     def add(a, b):
         if(a.numberOfColumns != b.numberOfColumns or a.numberOfRows != b.numberOfRows):
-            print "Matrice nisu jednakih dimentija i ne mogu se zbrojiti."
+            print "Matrices are of different dimensions and cannot be added."
             return None
 
 
@@ -190,7 +121,7 @@ class Matrix:
         resultElements = np.empty([a.numberOfRows, a.numberOfColumns], dtype=np.float64)
         for i in range(a.numberOfRows):
             for j in range(a.numberOfColumns):
-                #TODO gornji ili donji redak?
+                #TODO upper or lower line?
                 #resultElements[i][j] = a.elements[i][j] + b.elements[i][j]
                 resultElements[i,j] = a.elements[i,j] + b.elements[i,j]
 
@@ -201,13 +132,13 @@ class Matrix:
     @staticmethod
     def subtract(a, b):
         if(a.numberOfColumns != b.numberOfColumns or a.numberOfRows != b.numberOfRows):
-            print "Matrice nisu jednakih dimentija i oduzimanje se ne moze provesti."
+            print "Matrices are of different dimensions, subtraction cannot be done."
             return None
 
         resultElements = np.empty([a.numberOfRows,a.numberOfColumns], dtype = np.float64)
         for i in range(a.numberOfRows):
             for j in range (a.numberOfColumns):
-                #TODO gornji ili donji
+                #TODO upper or lower
                 #resultElements[i][j] = a.elements[i][j] - b.elements[i][j];
                 resultElements[i,j] = a.elements[i,j] - b.elements[i,j]
         resultMatrix = Matrix(a.numberOfRows, a.numberOfColumns, resultElements)
@@ -215,7 +146,7 @@ class Matrix:
 
     def plusEquals(self, matrix):
         #if (self.getColsCount() != matrix.getColsCount() || this.getRowsCount() != matrix.getRowsCount())
-            #throw new IncompatibleOperandException("Matrice su razlicitih dimenzija.");
+            #throw new IncompatibleOperandException("Matrices are of different dimensions.");
         #for (int i = this.getRowsCount() - 1; i >= 0; --i)
         for i in range(self.getRowsCount() - 1, -1, -1):
             #for (int j = this.getColsCount() - 1; j >= 0; --j)
@@ -225,7 +156,7 @@ class Matrix:
 
     def minusEquals(self, matrix):
         #if (self.getColsCount() != matrix.getColsCount() || this.getRowsCount() != matrix.getRowsCount())
-            #throw new IncompatibleOperandException("Matrice su razlicitih dimenzija.");
+            #throw new IncompatibleOperandException("Matrices are of different dimensions.");
         #for (int i = this.getRowsCount() - 1; i >= 0; --i)
         for i in range(self.getRowsCount() - 1, -1, -1):
             #for (int j = this.getColsCount() - 1; j >= 0; --j)
@@ -236,7 +167,7 @@ class Matrix:
 
     def multiply(self, matrix):
         #if (self.getColsCount() != matrix.getColsCount() || this.getRowsCount() != matrix.getRowsCount())
-            #throw new IncompatibleOperandException("Matrice su razlicitih dimenzija.");
+            #throw new IncompatibleOperandException("Matrices are of different dimensions.");
         #for (int i = this.getRowsCount() - 1; i >= 0; --i)
         elements = np.empty([self.getRowsCount()][matrix.getColsCount()], dtype=np.float64)
         for i in range(self.getRowsCount() - 1, -1, -1):
@@ -249,7 +180,7 @@ class Matrix:
     @staticmethod
     def multiply(a, b):
         if(a.numberOfColumns != b.numberOfRows):
-            print "Matrice nisu kompatibilne za mnozenje."
+            print "Matrices are not compatible for multiplication."
             return None
 
         #double [][] resultElements = new double[a.numberOfRows][b.numberOfColumns];
@@ -258,7 +189,7 @@ class Matrix:
             for j in range (b.numberOfColumns):
                 resultElement = 0
                 for k in range(a.numberOfColumns):
-                    #TODO gornji ili donji?
+                    #TODO upper or lower?
                     # resultElement = resultElement + a.elements[i][k]*b.elements[k][j];
                     resultElement = resultElement + a.elements[i,k] * b.elements[k,j]
                 #TODO
@@ -282,7 +213,8 @@ class Matrix:
     def sanityCheck(d):
         EPSILON = 1E-6
         if((abs(round(d) - d) < EPSILON) and (abs(round(d) - d) != 0) ):
-            print "Pojavila se vrijednost " + str(d) + " koja ima decimalno odstupanje od cijelog broja manje od epsilon = " + str(EPSILON) + ". Postavljam na " + str(round(d))
+            #print "Pojavila se vrijednost " + str(d) + " koja ima decimalno odstupanje od cijelog broja manje od epsilon = " + str(EPSILON) + ". Postavljam na " + str(round(d))
+            print "Rounding " + str(d) + " to " + str(round(d))
             return round(d)
         return d
 
@@ -300,7 +232,7 @@ class Matrix:
     @staticmethod
     def forwardSubstitution(a, b):
         if(b.numberOfRows!=a.numberOfRows):
-            print "Vektor b nije jednake dimenzije kao matrica, nije moguce provesti supstituciju unaprijed."
+            print "Vector b has different dimension than matrix - cannot do forward substitution."
         resultB = Matrix(b.numberOfRows, b.numberOfColumns, np.array(b.elements))
         #double[][] resultElements = new double[b.numberOfRows][1];
         resultElements = np.empty([b.numberOfRows][1], dtype=np.float64)
@@ -315,11 +247,11 @@ class Matrix:
     @staticmethod
     def backwardSupstitution(a, vector):
         if(vector.numberOfRows!=a.numberOfRows):
-            print "Vektor y nije jednake dimenzije kao matrica, nije moguce provesti supstituciju unatrag."
+            print "Vector y has different dimension than matrix - cannot do backward substitution."
         for i in range(a.numberOfRows-1, -1, -1):
             EPSILON = 1E-6
             if(abs(a.getElement(i, i))<EPSILON):
-                print "Gornja trokutasta matrica na dijagonali sadrzi nulu. Nije moguce provesti supstituciju unatrag"
+                print "Upper triangular matrix has zero on diagonal - cannot do backward substitution."
                 return None
             vector.setElement(i, 0, Matrix.sanityCheck(vector.getElement(i, 0)/a.getElement(i,i)))
             for j in range(i):
@@ -329,7 +261,7 @@ class Matrix:
 
     @staticmethod
     def swapRowsOfMatrix(matrix, firstRow, secondRow):
-        #TODO provjeri ispravnost
+        #TODO verify
         tmp = matrix.elements[firstRow,:]
         matrix.elements[firstRow] = matrix.elements[secondRow,:]
         matrix.elements[secondRow,:] = tmp
@@ -337,8 +269,8 @@ class Matrix:
     @staticmethod
     def lupDecomposition(a, permutationMatrix, lup):
         if (a.numberOfRows != a.numberOfColumns):
-            #throw new IllegalArgumentException("Matrica mora biti kvadratna.");
-            print "Matrica mora biti kvadratna."
+            #throw new IllegalArgumentException("Matrix must be square.");
+            print "Matrix must be square."
         identityMatrixElements = Matrix.createIdentityMatrixElements(a.numberOfRows)
         workingMatrix = Matrix.copyPoint(a)
         Matrix.printMatrix(workingMatrix)
@@ -349,20 +281,20 @@ class Matrix:
                 if (index != i):
                     Matrix.swapRowsOfMatrix(permutationMatrix, i, index)
                     Matrix.swapRowsOfMatrix(workingMatrix, i, index)
-                    print "Obavljamo mijenjanje redaka " + str(i) + " i " + str(index)
+                    print "Swapping rows " + str(i) + " and " + str(index)
                     Matrix.printMatrix(workingMatrix)
             pivot = workingMatrix.getElement(i, i)
             if (pivot == 0):
                 Matrix.printMatrix(workingMatrix)
-                print "Pivot je jednak nuli - nije moguce provesti dekompoziciju"
+                print "Pivot is zero - cannot do decomposition"
                 return None
             for j in range(i + 1, a.numberOfRows, 1):
                 workingMatrix.setElement(j, i, Matrix.sanityCheck(workingMatrix.getElement(j, i) / float(pivot)))
                 for k in range(i + 1,a.numberOfRows, 1):
                     workingMatrix.setElement(j, k, Matrix.sanityCheck(workingMatrix.getElement(j, k) - workingMatrix.getElement(j, i) * workingMatrix.getElement(i, k)))
             Matrix.printMatrix(workingMatrix);
-        #TODO mozda vracati i working i permutacijsku?
-        print "Vracam dekomponiranu matricu, a predana permutacijska matrica promijenjena je ako je bilo potrebno. Njome sada treba pomnoziti vektor b."
+        #TODO maybe return both working matrix and permutation matrix?
+        #print "Vracam dekomponiranu matricu, a predana permutacijska matrica promijenjena je ako je bilo potrebno. Njome sada treba pomnoziti vektor b."
         return workingMatrix
 
     @staticmethod
@@ -398,11 +330,11 @@ class Matrix:
     @staticmethod
     def hasInverse(matrix):
         if(matrix.numberOfRows != matrix.numberOfColumns):
-            print "Matrica nije kvadratna, nema inverz"
+            print "Matrix is not square, does not have inverse"
             return False
         determinant = Matrix.determinant(matrix)
         if(determinant == 0):
-            print "Matrica je singularna, nema inverz"
+            print "Matrix is singular, does not have inverse"
             return False
         return True
 
@@ -418,33 +350,33 @@ class Matrix:
         return matrix.elements[0,0] * matrix.elements[1,1] * matrix.elements[2,2] + matrix.elements[0,1] * matrix.elements[1,2] * matrix.elements[2,0] + matrix.elements[0,2] * matrix.elements[1,0] * matrix.elements[2,1] - matrix.elements[2,0] * matrix.elements[1,1] * matrix.elements[0,2] - matrix.elements[2,1] * matrix.elements[1,2] * matrix.elements[0,0] - matrix.elements[2,2] * matrix.elements[1,0] * matrix.elements[0,1]
 
     @staticmethod
-    def invert(matricaZaInvertirati):
+    def invert(matrixToInvert):
 
         #Ax = prvi stupac jedinicne
         #=> x je prvi stupac invertirane, itd. za svaki stupac
 
-        kopijaMatriceZaInvertirati = Matrix.copyPoint(matricaZaInvertirati)
-        jedinicnaMatricaElements = Matrix.createIdentityMatrixElements(kopijaMatriceZaInvertirati.getRowsCount())#stvori jedinicnu matricu;
-        jedinicnaMatrica = Matrix(kopijaMatriceZaInvertirati.getRowsCount(), kopijaMatriceZaInvertirati.getColsCount(), jedinicnaMatricaElements)
+        copyOfMatrixToInvert = Matrix.copyPoint(matrixToInvert)
+        identityMatrixElements = Matrix.createIdentityMatrixElements(copyOfMatrixToInvert.getRowsCount()) #create identity matrix;
+        identityMatrix = Matrix(copyOfMatrixToInvert.getRowsCount(), copyOfMatrixToInvert.getColsCount(), identityMatrixElements)
 
-        dekomponirana = Matrix.lupDecomposition(kopijaMatriceZaInvertirati,jedinicnaMatrica,True)
-        elementiKonacneInvertiraneMatrice = np.empty([matricaZaInvertirati.getColsCount(),matricaZaInvertirati.getRowsCount()], dtype= np.float64)
+        decomposed = Matrix.lupDecomposition(copyOfMatrixToInvert,identityMatrix,True)
+        elementsOfFinalInvertedMatrix = np.empty([matrixToInvert.getColsCount(), matrixToInvert.getRowsCount()], dtype= np.float64)
 
-        for j in range(matricaZaInvertirati.getColsCount()):
-            elementiIpsilona = np.empty([matricaZaInvertirati.getRowsCount(),1], dtype=np.float64)
+        for j in range(matrixToInvert.getColsCount()):
+            elementsOfY = np.empty([matrixToInvert.getRowsCount(), 1], dtype=np.float64)
             #TODO
-            # elementiIpsilona[j][0] = 1;
-            elementiIpsilona[j,0] = 1
-            y = Matrix(matricaZaInvertirati.getRowsCount(), 1, elementiIpsilona)
-            permutiraniY = Matrix.multiply(jedinicnaMatrica,y)
-            ySupstituiranUnaprijed = Matrix.forwardSubstitution(dekomponirana, permutiraniY)
-            ySupstituiranUnatrag = Matrix.backwardSupstitution(dekomponirana, ySupstituiranUnaprijed)
+            # elementsOfY[j][0] = 1;
+            elementsOfY[j,0] = 1
+            y = Matrix(matrixToInvert.getRowsCount(), 1, elementsOfY)
+            permutatedY = Matrix.multiply(identityMatrix,y)
+            forwardSubstitutedY = Matrix.forwardSubstitution(decomposed, permutatedY)
+            backwardSubstitutedY = Matrix.backwardSupstitution(decomposed, forwardSubstitutedY)
 
-            for i in range(ySupstituiranUnatrag.getRowsCount()):
+            for i in range(backwardSubstitutedY.getRowsCount()):
                 #TODO
-                #elementiKonacneInvertiraneMatrice[i][j] = ySupstituiranUnatrag.getElements()[i][0];
-                elementiKonacneInvertiraneMatrice[i,j] = ySupstituiranUnatrag.getElements()[i,0]
+                #elementsOfFinalInvertedMatrix[i][j] = backwardSubstitutedY.getElements()[i][0];
+                elementsOfFinalInvertedMatrix[i,j] = backwardSubstitutedY.getElements()[i,0]
 
-        konacnaInvertiranaMatrica = Matrix(matricaZaInvertirati.getRowsCount(), matricaZaInvertirati.getColsCount(), elementiKonacneInvertiraneMatrice)
-        return konacnaInvertiranaMatrica
+        finalInvertedMatrix = Matrix(matrixToInvert.getRowsCount(), matrixToInvert.getColsCount(), elementsOfFinalInvertedMatrix)
+        return finalInvertedMatrix
 

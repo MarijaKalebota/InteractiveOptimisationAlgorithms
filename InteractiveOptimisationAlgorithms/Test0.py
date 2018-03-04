@@ -89,8 +89,8 @@ class Drawer:
     #def drawAnimation(self):
     def drawAnimation(self, minX, maxX, minY, maxY, numberOfSamplesOfX):
         playMaxOfInterval = 0
-        poljeX = []
-        poljeY = []
+        arrayX = []
+        arrayY = []
         '''
         minX = self.logger.getIterations()[0].xValue
         maxX = self.logger.getIterations()[0].xValue
@@ -101,7 +101,7 @@ class Drawer:
         for iteration in self.logger.getIterations():
             playMaxOfInterval = playMaxOfInterval + 1
             # stvori polje ovih brojeva
-            poljeX.append(iteration.xValue)
+            arrayX.append(iteration.xValue)
             '''
             if(iteration.xValue < minX):
                 minX = iteration.xValue
@@ -113,18 +113,18 @@ class Drawer:
                 maxY = iteration.yValue
             '''
 
-            poljeY.append(iteration.yValue)
+            arrayY.append(iteration.yValue)
         '''
-        print "PoljeX: "
-        for x in poljeX:
+        print "ArrayX: "
+        for x in arrayX:
             print str(x)
-        print "PoljeY: "
-        for x in poljeY:
+        print "ArrayY: "
+        for x in arrayY:
             print str(x)
         '''
 
-        relativniOdmakX = (maxX - minX) / 10
-        relativniOdmaky = (maxY - minY) / 10
+        relativeDistanceX = (maxX - minX) / 10
+        relativeDistaceY = (maxY - minY) / 10
 
         w = widgets.IntSlider(min=0, max=playMaxOfInterval - 1, step=1, value=0)
         play = widgets.Play(
@@ -150,17 +150,17 @@ class Drawer:
         previousButton.on_click(on_previousButton_clicked)
 
         widgets.jslink((play, 'value'), (w, 'value'))
-        #def f(poljeX, poljeY, iteration):
-        #def f(poljeX, poljeY, iteration, minX, maxX, minY, maxY, relOdmakX, relOdmakY):
-        def f(poljeX, poljeY, iteration, minX, maxX, minY, maxY):
-            funkcija = self.logger.getFunction()
+        #def f(arrayX, arrayY, iteration):
+        #def f(arrayX, arrayY, iteration, minX, maxX, minY, maxY, relOdmakX, relOdmakY):
+        def f(arrayX, arrayY, iteration, minX, maxX, minY, maxY):
+            function = self.logger.getFunction()
             plt.clf()
             plt.close('all')
             plt.figure(iteration)
             #plt.axis([0.0, 15.0, -5.0, 30.0])
             #plt.axis([0.0, 6.0, -0.5, 4.0])
-            #TODO maknuti hardkodirani axis - postaviti ga na (min(x) - relativni odmak),(max(x) + relativni odmak), isto za y
-            #plt.axis([minX - relOdmakX, maxX + relOdmakX, minY - relOdmakY, maxY + relOdmakY])
+            #TODO remove hardcoded axis - set it to (min(x) - relative distance),(max(x) + relative distance), same for y
+            #plt.axis([minX - relDistanceX, maxX + relDistanceX, minY - relDistanceY, maxY + relDistanceY])
             plt.axis([minX, maxX, minY, maxY])
             ax = plt.gca()
             ax.set_autoscale_on(False)
@@ -168,18 +168,18 @@ class Drawer:
             #X = np.linspace(0.0, 13.0, num=10)
 
             X = np.linspace(minX, maxX, num=numberOfSamplesOfX)
-            #X = np.linspace(minX - relOdmakX, maxX + relOdmakX, num=10)
+            #X = np.linspace(minX - relDistanceX, maxX + relDistanceX, num=10)
             #X = np.linspace(0.0, 6.0, num=10)
-            #TODO ovaj linspace staviti na iste vrijednosti kao i axis
-            Y = [funkcija.valueAt(x) for x in X]
+            #TODO set this linspace to the same values as axis
+            Y = [function.valueAt(x) for x in X]
 
             plt.plot(X, Y, 'b')
-            plt.plot(poljeX[iteration], poljeY[iteration], 'ro')
+            plt.plot(arrayX[iteration], arrayY[iteration], 'ro')
             plt.show()
 
-        #interact(f, poljeX=fixed(poljeX), poljeY = fixed(poljeY), iteration=w)
-        #interact(f, poljeX=fixed(poljeX), poljeY=fixed(poljeY), iteration=w, minX=fixed(minX), maxX=fixed(maxX), minY=fixed(minY), maxY=fixed(maxY), relOdmakX = fixed(relativniOdmakX), relOdmakY = fixed(relativniOdmaky))
-        interact(f, poljeX=fixed(poljeX), poljeY=fixed(poljeY), iteration=w, minX=minX, maxX=maxX, minY=minY, maxY=maxY)
+        #interact(f, arrayX=fixed(arrayX), arrayY = fixed(arrayY), iteration=w)
+        #interact(f, arrayX=fixed(arrayX), arrayY=fixed(arrayY), iteration=w, minX=fixed(minX), maxX=fixed(maxX), minY=fixed(minY), maxY=fixed(maxY), relDistanceX = fixed(relativeDistanceX), relDistanceY = fixed(relativeDistaceY))
+        interact(f, arrayX=fixed(arrayX), arrayY=fixed(arrayY), iteration=w, minX=minX, maxX=maxX, minY=minY, maxY=maxY)
         display(play)
 
         display(previousButton)
@@ -309,28 +309,28 @@ class Drawer:
 
 class Unimodal:
     @staticmethod
-    def findUnimodal(tocka, h, f): #tocka, h, f):
-        #valueAtLeftOfTocka = f.valueAt(tocka - 2 * h);
-        #valueAtLeftOfTocka = f(tocka - 2 * h)
-        valueAtLeftOfTocka = f.valueAt(tocka - 2 * h)
-        valueAtTocka = f.valueAt(tocka)
-        valueAtRightOfTocka = f.valueAt(tocka + 2 * h)
+    def findUnimodal(point, h, f): #point, h, f):
+        #valueAtLeftOfPoint = f.valueAt(point - 2 * h);
+        #valueAtLeftOfPoint = f(point - 2 * h)
+        valueAtLeftOfPoint = f.valueAt(point - 2 * h)
+        valueAtPoint = f.valueAt(point)
+        valueAtRightOfPoint = f.valueAt(point + 2 * h)
         power = 1
         #returnValue = new double[2];
         returnValue = [0, 0]
-        if (valueAtLeftOfTocka < valueAtTocka):
-        # koristi formulu s minusom
-            rightSideOfInterval = tocka
-            middleOfInterval = tocka - 2 * h
-            leftSideOfInterval = tocka - 2 * 2 * h
-            #while (valueAtTocka > valueAtLeftOfTocka){
+        if (valueAtLeftOfPoint < valueAtPoint):
+        # use the formula with the minus
+            rightSideOfInterval = point
+            middleOfInterval = point - 2 * h
+            leftSideOfInterval = point - 2 * 2 * h
+            #while (valueAtPoint > valueAtLeftOfPoint){
             while (f.valueAt(middleOfInterval) > f.valueAt(leftSideOfInterval)):
-                #rightSideOfInterval = tocka - Math.pow(2, power) * h;
-                rightSideOfInterval = tocka - (2**power) * h
-                #middleOfInterval = tocka - Math.pow(2, power+1) * h;
-                middleOfInterval = tocka - (2**(power + 1)) * h
-                #leftSideOfInterval = tocka - Math.pow(2, power+2) * h;
-                leftSideOfInterval = tocka - (2**(power + 2)) * h
+                #rightSideOfInterval = point - Math.pow(2, power) * h;
+                rightSideOfInterval = point - (2 ** power) * h
+                #middleOfInterval = point - Math.pow(2, power+1) * h;
+                middleOfInterval = point - (2 ** (power + 1)) * h
+                #leftSideOfInterval = point - Math.pow(2, power+2) * h;
+                leftSideOfInterval = point - (2 ** (power + 2)) * h
 
                 power = power + 1
 
@@ -340,18 +340,18 @@ class Unimodal:
             return returnValue
 
 
-        elif (valueAtRightOfTocka < valueAtTocka):
-            leftSideOfInterval = tocka
-            middleOfInterval = tocka + 2 * h
-            rightSideOfInterval = tocka + 2 * 2 * h
+        elif (valueAtRightOfPoint < valueAtPoint):
+            leftSideOfInterval = point
+            middleOfInterval = point + 2 * h
+            rightSideOfInterval = point + 2 * 2 * h
 
             while (f.valueAt(middleOfInterval) > f.valueAt(rightSideOfInterval)):
-                #leftSideOfInterval = tocka + Math.pow(2, power) * h;
-                leftSideOfInterval = tocka +(2**power) * h
-                #middleOfInterval = tocka + Math.pow(2, power+1) * h;
-                middleOfInterval = tocka +(2**(power + 1)) * h
-                #rightSideOfInterval = tocka + Math.pow(2, power+2) * h;
-                rightSideOfInterval = tocka + (2**(power + 2)) * h
+                #leftSideOfInterval = point + Math.pow(2, power) * h;
+                leftSideOfInterval = point + (2 ** power) * h
+                #middleOfInterval = point + Math.pow(2, power+1) * h;
+                middleOfInterval = point + (2 ** (power + 1)) * h
+                #rightSideOfInterval = point + Math.pow(2, power+2) * h;
+                rightSideOfInterval = point + (2 ** (power + 2)) * h
                 power = power + 1
 
 
@@ -361,25 +361,25 @@ class Unimodal:
 
 
         else:
-            returnValue[0] = tocka - 2 * h
-            returnValue[1] = tocka + 2 * h
+            returnValue[0] = point - 2 * h
+            returnValue[1] = point + 2 * h
             return returnValue
 
 
-class ZlatniRez:
+class GoldenSection:
     #EPSILON = 1E-6
     @staticmethod
-    def provediZlatniRezSPocTockom(tocka, epsilon, f, printMe): #IFunction f)
+    def runGoldenSectionWithInitialPoint(point, epsilon, f, printMe): #IFunction f)
         if (printMe):
-            print "Usao sam u provodenje zlatnog reza"
-        unimodalniInterval = Unimodal.findUnimodal(tocka, 1, f)
+            print "Running golden section"
+        unimodalInterval = Unimodal.findUnimodal(point, 1, f)
         if (printMe):
-            print "Izasao sam iz trazenja unimodalnog intervala"
+            print "Found unimodal interval"
 
-        a = unimodalniInterval[0]
-        b = unimodalniInterval[1]
+        a = unimodalInterval[0]
+        b = unimodalInterval[1]
         if (printMe):
-            print "Unimodalni interval. a = " + str(a) + "\tb = " + str(b)
+            print "Unimodal interval. a = " + str(a) + "\tb = " + str(b)
 
 
         #double k = (Math.sqrt(5) - 1) / 2.; // k = 0.618
@@ -399,26 +399,26 @@ class ZlatniRez:
                 print "c = " + str(c) + "\td = " + str(d)
 
             if (f.valueAt(c) <= f.valueAt(d)):
-                #pomakni c na d, d na b, izracunaj novi c
+                #move c to d, d to b, calculate new c
                 if (printMe):
-                    print "c je bolji od d"
+                    print "c is better than d"
                 b = d
                 d = c
                 c = b - (b-a) * k
 
             elif (f.valueAt(c) > f.valueAt(d)):
-                #pomakni d na c, c na a, izracunaj novi d
+                #move d to c, c to a, calculate new d
                 if (printMe):
-                    print "d je bolji od c"
+                    print "d is better than c"
                 a = c
                 c = d
                 d = a + (b-a) * k
 
             else:
-                print "U zlatnom rezu nije zadovoljen nijedan od dva uvjeta"
+                print "Neither of the two conditions was met in the golden section search"
 
             if (printMe):
-                print "Novi a = " + str(a) + "\tc = " + str(c) + "\td = " + str(d) + "\t b = " + str(b)
+                print "New a = " + str(a) + "\tc = " + str(c) + "\td = " + str(d) + "\t b = " + str(b)
 
             iteracija = iteracija + 1
 
@@ -426,24 +426,24 @@ class ZlatniRez:
         returnValue = [0, 0]
         returnValue[0] = a
         returnValue[1] = b
-        print "\nKonacni rezultat zlatnog reza: [" + str(a) + "]["+ str(b) + "]"
+        print "\nGolden section - final solution: [" + str(a) + "]["+ str(b) + "]"
         return returnValue
 
     @staticmethod
-    def provediZlatniRezSPoznatimIntervalom(a, b, f, epsilon):#, IFunction f){
+    def runGoldenSectionWithKnownInterval(a, b, f, epsilon):#, IFunction f){
         #k = (1. + Math.sqrt(5)) / 2.; // k = 0.618
         k = (5 ** (0.5) - 1) / 2.  # k = 0.618
         c = b - (b - a) * k
         d = a + (b - a) * k
         while (abs(a - b) > epsilon):
             if (f.valueAt(c) <= f.valueAt(d)):
-                # pomakni c na d, d na b, izracunaj novi c
+                # move c to d, d to b, calculate new c
                 b = d
                 d = c
                 c = b - (b-a) * k
 
             elif (f.valueAt(c) > f.valueAt(d)):
-                #pomakni d na c, c na a, izracunaj novi d
+                #move d to c, c to a, calculate new d
                 a = c
                 c = d
                 d = a + (b-a) * k
@@ -459,28 +459,28 @@ class ZlatniRez:
 
 class HookeJeeves:
     @staticmethod
-    def run(f, tocka, pomak, factor, epsilon, printMe):
+    def run(f, point, step, factor, epsilon, printMe):
         #f = open('HookeJeevesOutput.txt', 'w')
         outputString = ""
-        xb = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
-        xp = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
-        xn = Matrix(tocka.getRowsCount(), tocka.getColsCount(), np.array(tocka.getElements()))
-        iteracija = 0
+        xb = Matrix(point.getRowsCount(), point.getColsCount(), np.array(point.getElements()))
+        xp = Matrix(point.getRowsCount(), point.getColsCount(), np.array(point.getElements()))
+        xn = Matrix(point.getRowsCount(), point.getColsCount(), np.array(point.getElements()))
+        iterationNumber = 0
         logger = Logger(f)
-        while (pomak > epsilon):
+        while (step > epsilon):
             additionalInfo = {}
             #nadi xn
             if (printMe):
-                print "Iteracija: " + str(iteracija + 1)
+                print "Iteration: " + str(iterationNumber + 1)
             for i in range(xn.getColsCount()):
                 plus = Matrix.copyPoint(xn)
                 #TODO
                 #plus.getElements()[0][i] = plus.getElements()[0][i] + pomak;
-                plus.getElements()[0,i] = plus.getElements()[0,i] + pomak
+                plus.getElements()[0,i] = plus.getElements()[0,i] + step
                 minus = Matrix.copyPoint(xn)
                 #TODO
                 #minus.getElements()[0][i] = minus.getElements()[0][i] - pomak;
-                minus.getElements()[0,i] = minus.getElements()[0,i] - pomak
+                minus.getElements()[0,i] = minus.getElements()[0,i] - step
 
                 currentMinimum = xn
                 test = f.valueAt(plus)
@@ -498,7 +498,7 @@ class HookeJeeves:
                 Matrix.printMatrix(xp)
                 print "\txn = "
                 Matrix.printMatrix(xn)
-                print "Pomak = " + str(pomak)
+                print "Step = " + str(step)
 
             xbDescription = "xb - Bazna tocka algoritma Hooke-Jeeves"
             xpDescription = "xp - Tocka pretrazivanja algoritma Hooke-Jeeves u trenutnoj iteraciji. xp' = 2*xn + xb"
@@ -515,9 +515,9 @@ class HookeJeeves:
             #currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additionalInfo)
             #currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
             if(xn.getColsCount() == 1):
-                currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
+                currentIteration = Iteration(iterationNumber, f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
             elif(xn.getColsCount() == 2):
-                currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additionalInfo)
+                currentIteration = Iteration(iterationNumber, f.valueAt(xn), xn, additionalInfo)
             logger.addIteration(currentIteration)
 
             if (f.valueAt(xn) < f.valueAt(xb)):
@@ -526,18 +526,18 @@ class HookeJeeves:
                 xb = Matrix.copyPoint(xn)
                 xn = Matrix.copyPoint(xp)
             else:
-                pomak = pomak * factor
+                step = step * factor
                 if (printMe):
-                    print "Changing pomak to " + str(pomak)
+                    print "Changing step to " + str(step)
                 xp = Matrix.copyPoint(xb)
                 xn = Matrix.copyPoint(xp)
 
-            iteracija = iteracija + 1
+            iterationNumber = iterationNumber + 1
             outputString = outputString + str(xn.getElement(0,0))
             for i in range(1, xn.getColsCount()):
                 outputString = outputString + " " + str(xn.getElement(0,i))
             outputString = outputString + "\n"
-        print "Konacno rjesenje Hooke-Jeevesa za pocetnu tocku " + str(tocka.getElement(0,0)) + " je " + str(xb.getElements())
+        print "Final solution of Hooke-Jeeves search for initial point " + str(point.getElement(0, 0)) + " is " + str(xb.getElements())
         output = open('HookeJeevesOutput.txt', 'w')
         output.write(outputString)
         return xb, logger
@@ -548,14 +548,14 @@ def main():
     f3OneDimensional1 = F3OneDimensional()
     f3OneDimensional12 = F3OneDimensional()
     elements = np.array([[10]])
-    tocka1 = Matrix(1, 1, elements)
-    tocka12 = Matrix.copyPoint(tocka1)
-    interval = ZlatniRez.provediZlatniRezSPocTockom(tocka1.getElement(0,0), 1E-6, f3OneDimensional1, True)
-    #rjesenjeHookeJeeves, loggerHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, tocka12, 1, 0.99, 1E-6, True)
-    rjesenjeHookeJeeves, loggerHookeJeeves = HookeJeeves.run(f3OneDimensional12, tocka12, 1, 0.5, 1E-6, True)
+    point1 = Matrix(1, 1, elements)
+    point12 = Matrix.copyPoint(point1)
+    interval = GoldenSection.runGoldenSectionWithInitialPoint(point1.getElement(0, 0), 1E-6, f3OneDimensional1, True)
+    #solutionHookeJeeves, loggerHookeJeeves = HookeJeeves.provediHookeJeeves(f3OneDimensional12, point12, 1, 0.99, 1E-6, True)
+    solutionHookeJeeves, loggerHookeJeeves = HookeJeeves.run(f3OneDimensional12, point12, 1, 0.5, 1E-6, True)
 
-    #print tocka1.getRowsCount()
-    #Matrix.printMatrix(rjesenjeHookeJeeves)
+    #print point1.getRowsCount()
+    #Matrix.printMatrix(solutionHookeJeeves)
 
 if (__name__ == '__main__'):
     main()

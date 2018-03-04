@@ -92,7 +92,7 @@ class F3OneDimensional(AbstractFunction):
 
     def __valueAtMatrix(self, point):
         if(point.getColsCount()!=1 and point.getRowsCount()!=1):
-            raise ValueError("Tocka mora biti u jednodimenzijskom prostoru.")
+            raise ValueError("Point must be one-dimensional.")
         return F3OneDimensional.__valueAtPoint(self, point.getElement(0, 0))
 
     '''
@@ -127,11 +127,11 @@ class F1RosenbrockBananaFunction(AbstractFunction):
         if isinstance(args[0], Matrix):
             return self.__valueAtMatrix(*args)
         else:
-            print "Poslani argument mora biti tipa Matrix"
+            print "Argument must be of type Matrix"
 
     def __valueAtMatrix(self, point):
         if (point.getColsCount() != 2):
-            print "Funckija prima dva parametra."
+            print "Function takes two parameters."
         AbstractFunction.increment(self)
         return 100 * (point.getElement(0, 1) - point.getElement(0, 0)**2)**2 + (1 - point.getElement(0, 0))**2
 
@@ -192,7 +192,7 @@ class F4xcosx(AbstractFunction):
 
     def __valueAtMatrix(self, point):
         if (point.getColsCount() != 1 and point.getRowsCount() != 1):
-            raise ValueError("Tocka mora biti u jednodimenzijskom prostoru.")
+            raise ValueError("Point must be one-dimensional.")
         return F4xcosx.__valueAtPoint(self, point.getElement(0, 0))
 
     '''

@@ -8,5 +8,5 @@ from Test0 import HookeJeeves
 
 f1 = F1RosenbrockBananaFunction()
 elements1 = np.array([[-1.9, 2]])
-tocka1 =  Matrix(1,2,elements1)
-rjesenjeHookeJeeves1, logger = HookeJeeves.run(f1, tocka1, 1, 0.5, 1E-6, True)
+point1 =  Matrix(1, 2, elements1)
+solutionHookeJeeves1, logger = HookeJeeves.run(f1, point1, 1, 0.5, 1E-6, True)
