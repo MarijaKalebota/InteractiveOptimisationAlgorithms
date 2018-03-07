@@ -3,7 +3,8 @@ import numpy as np
 from Matrix import *
 #import Functions
 from Functions import *
-from Test0 import HookeJeeves
+from Test0 import *
+from Algorithms import *
 
 
 f1 = F1RosenbrockBananaFunction()
