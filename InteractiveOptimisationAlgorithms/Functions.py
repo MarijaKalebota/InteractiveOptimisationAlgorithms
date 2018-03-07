@@ -36,11 +36,6 @@ class IFunction(object):
     def getNumberOfCalls(self):
         raise NotImplementedError
 
-class IAlgorithm(object):
-
-    def run(self, initialPoint):
-        raise NotImplementedError
-
 class AbstractFunction(IFunction):
 
     def __init__(self):
