@@ -1,5 +1,5 @@
 from Functions import *
-from Test0 import *
+from Drawing import *
 
 
 class IAlgorithm(object):
@@ -156,48 +156,56 @@ class GoldenSection:
         return returnValue
 
 
-class HookeJeeves:
-    @staticmethod
-    def run(f, point, step, factor, epsilon, printMe):
+class HookeJeeves(IAlgorithm):
+
+    def __init__(self, f, step, factor, epsilon, print_me):
+        self.f = f
+        self.step = step
+        self.factor = factor
+        self.epsilon = epsilon
+        self.print_me = print_me
+
+    #@staticmethod
+    def run(self, initialPoint):
         #f = open('HookeJeevesOutput.txt', 'w')
         outputString = ""
-        xb = Matrix(point.getRowsCount(), point.getColsCount(), np.array(point.getElements()))
-        xp = Matrix(point.getRowsCount(), point.getColsCount(), np.array(point.getElements()))
-        xn = Matrix(point.getRowsCount(), point.getColsCount(), np.array(point.getElements()))
+        xb = Matrix(initialPoint.getRowsCount(), initialPoint.getColsCount(), np.array(initialPoint.getElements()))
+        xp = Matrix(initialPoint.getRowsCount(), initialPoint.getColsCount(), np.array(initialPoint.getElements()))
+        xn = Matrix(initialPoint.getRowsCount(), initialPoint.getColsCount(), np.array(initialPoint.getElements()))
         iterationNumber = 0
-        logger = Logger(f)
-        while (step > epsilon):
+        logger = Logger(self.f)
+        while (self.step > self.epsilon):
             additionalInfo = {}
             #nadi xn
-            if (printMe):
+            if (self.print_me):
                 print "Iteration: " + str(iterationNumber + 1)
             for i in range(xn.getColsCount()):
                 plus = Matrix.copyPoint(xn)
                 #TODO
                 #plus.getElements()[0][i] = plus.getElements()[0][i] + pomak;
-                plus.getElements()[0,i] = plus.getElements()[0,i] + step
+                plus.getElements()[0,i] = plus.getElements()[0,i] + self.step
                 minus = Matrix.copyPoint(xn)
                 #TODO
                 #minus.getElements()[0][i] = minus.getElements()[0][i] - pomak;
-                minus.getElements()[0,i] = minus.getElements()[0,i] - step
+                minus.getElements()[0,i] = minus.getElements()[0,i] - self.step
 
                 currentMinimum = xn
-                test = f.valueAt(plus)
-                test2 = f.valueAt(minus)
-                if (f.valueAt(plus) < f.valueAt(currentMinimum)):
+                test = self.f.valueAt(plus)
+                test2 = self.f.valueAt(minus)
+                if (self.f.valueAt(plus) < self.f.valueAt(currentMinimum)):
                     currentMinimum = plus
-                if (f.valueAt(minus) < f.valueAt(currentMinimum)):
+                if (self.f.valueAt(minus) < self.f.valueAt(currentMinimum)):
                     currentMinimum = minus
                 xn = currentMinimum
 
-            if (printMe):
+            if (self.print_me):
                 print "xb = "
                 Matrix.printMatrix(xb)
                 print "\txp = "
                 Matrix.printMatrix(xp)
                 print "\txn = "
                 Matrix.printMatrix(xn)
-                print "Step = " + str(step)
+                print "Step = " + str(self.step)
 
             xbDescription = "xb - Bazna tocka algoritma Hooke-Jeeves"
             xpDescription = "xp - Tocka pretrazivanja algoritma Hooke-Jeeves u trenutnoj iteraciji. xp' = 2*xn + xb"
@@ -214,20 +222,20 @@ class HookeJeeves:
             #currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additionalInfo)
             #currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
             if(xn.getColsCount() == 1):
-                currentIteration = Iteration(iterationNumber, f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
+                currentIteration = Iteration(iterationNumber, self.f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
             elif(xn.getColsCount() == 2):
-                currentIteration = Iteration(iterationNumber, f.valueAt(xn), xn, additionalInfo)
+                currentIteration = Iteration(iterationNumber, self.f.valueAt(xn), xn, additionalInfo)
             logger.addIteration(currentIteration)
 
-            if (f.valueAt(xn) < f.valueAt(xb)):
+            if (self.f.valueAt(xn) < self.f.valueAt(xb)):
                 xp = Matrix.subtract(Matrix.scalarMultiply(xn, 2), xb)
 
                 xb = Matrix.copyPoint(xn)
                 xn = Matrix.copyPoint(xp)
             else:
-                step = step * factor
-                if (printMe):
-                    print "Changing step to " + str(step)
+                self.step = self.step * self.factor
+                if (self.print_me):
+                    print "Changing step to " + str(self.step)
                 xp = Matrix.copyPoint(xb)
                 xn = Matrix.copyPoint(xp)
 
@@ -236,7 +244,7 @@ class HookeJeeves:
             for i in range(1, xn.getColsCount()):
                 outputString = outputString + " " + str(xn.getElement(0,i))
             outputString = outputString + "\n"
-        print "Final solution of Hooke-Jeeves search for initial point " + str(point.getElement(0, 0)) + " is " + str(xb.getElements())
+        print "Final solution of Hooke-Jeeves search for initial initialPoint " + str(initialPoint.getElement(0, 0)) + " is " + str(xb.getElements())
         output = open('HookeJeevesOutput.txt', 'w')
         output.write(outputString)
         return xb, logger
