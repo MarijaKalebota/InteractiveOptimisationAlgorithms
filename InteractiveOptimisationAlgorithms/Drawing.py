@@ -17,6 +17,9 @@ from IPython.display import display
 from ipywidgets import *
 import numbers
 import decimal
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 #from Algorithms import *
 #class IFunction:
 
@@ -173,8 +176,8 @@ class Drawer:
             #X = np.linspace(0.0, 6.0, num=10)
             #TODO set this linspace to the same values as axis
             Y = [function.valueAt(x) for x in X]
-
             plt.plot(X, Y, 'b')
+
             plt.plot(arrayX[iteration], arrayY[iteration], 'ro')
             plt.show()
 
@@ -308,5 +311,105 @@ class Drawer:
         display(nextButton)
 
 
-    def drawAnimation3D(self):
-        raise NotImplementedError
+    def drawAnimation3D(self, min_X1, max_X1, min_X2, max_X2, number_of_samples_of_domain):#, interactive):
+        #raise NotImplementedError
+        '''
+        if(interactive):
+            %matplotlib notebook
+        else:
+            %matplotlib inline
+            '''
+        function = self.logger.getFunction()
+
+        # Create fixed arrays for graph
+        X1_for_graph_before_meshgrid = np.linspace(min_X1, max_X1, number_of_samples_of_domain)
+        X2_for_graph_before_meshgrid = np.linspace(min_X2, max_X2, number_of_samples_of_domain)
+
+        X1_for_graph, X2_for_graph = np.meshgrid(X1_for_graph_before_meshgrid, X2_for_graph_before_meshgrid)
+        Z_for_graph = []
+        for x2 in X2_for_graph_before_meshgrid:
+            Z = []
+            for x1 in X1_for_graph_before_meshgrid:
+                elements = np.array([[x1, x2]])
+                matrix_x1_x2 = Matrix(1, 2, elements)
+                Z.append(function.valueAt(matrix_x1_x2))
+            Z_for_graph.append(Z)
+
+        # Create fixed arrays for data from logger
+        playMaxOfInterval = 0
+        X1_from_logger = []
+        X2_from_logger = []
+        Z_from_logger = []
+
+        for iteration in self.logger.getIterations():
+            playMaxOfInterval = playMaxOfInterval + 1
+            X1_from_logger.append(iteration.x1Value)
+            X2_from_logger.append(iteration.x2Value)
+            Z_from_logger.append(iteration.yValue)
+
+        # Create and link widgets
+        w = widgets.IntSlider(min=0, max=playMaxOfInterval - 1, step=1, value=0)
+        play = widgets.Play(
+            value=0,
+            min=0,
+            max=playMaxOfInterval,
+            step=1,
+            description="Press play",
+            disabled=False
+        )
+        nextButton = widgets.Button(description="Next")
+        previousButton = widgets.Button(description="Previous")
+        def on_nextButton_clicked(x):
+            if (play.value < play.max):
+                play.value += 1
+        def on_previousButton_clicked(x):
+            if (play.value > 0):
+                play.value -= 1
+        nextButton.on_click(on_nextButton_clicked)
+        previousButton.on_click(on_previousButton_clicked)
+        widgets.jslink((play, 'value'), (w, 'value'))
+
+        # Define function for drawing the whole graph and a single point from the logger
+        def f(iteration_number, cmap):
+            plt.clf()
+            plt.close('all')
+            #plt.figure(iteration)
+            #fig = plt.figure()
+            #fig = plt.figure(iteration_number)
+            plt.figure(iteration_number)
+            ax = plt.axes(projection='3d')
+            #ax.contour3D(X1_for_graph, X2_for_graph, Z_for_graph, 50, cmap='Accent')
+
+            # Plot fixed graph
+            ax.contour3D(X1_for_graph, X2_for_graph, Z_for_graph, 50, cmap=cmap)
+            # plt.plot([-1.9], [2.0], 'b')
+            ax.set_xlabel('x1')
+            ax.set_ylabel('x2')
+            ax.set_zlabel('z');
+
+            # Plot single point depending on the iteration
+            ax.plot([X1_from_logger[iteration_number]], [X2_from_logger[iteration_number]], [Z_from_logger[iteration_number]],
+                    markerfacecolor='k', markeredgecolor='k', marker='o', markersize=5, alpha=1)
+            #ax.scatter(X1_from_logger, X2_from_logger, Z_from_logger, c='g', marker='^')
+            plt.show()
+
+        # Define cmap choices
+        cmap_choices = {
+            'Accent': 'Accent',
+            'Accent_r': 'Accent_r'}#,
+
+        '''
+            'Blues': 'Blues',
+            'Blues_r': 'Blues_r',
+            'BrBG' : 'BrBG',
+            'BrBG_r' : 'BrBG_r',
+            'BuGn' : 'BuGn',
+            'BuGn_r' : 'BuGn_r'
+        }'''
+
+        # Call the function interactively
+        interact(f, iteration_number=w, cmap = cmap_choices)
+        # Display remaining widgets
+        display(play)
+        display(previousButton)
+        display(nextButton)
