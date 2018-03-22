@@ -14,17 +14,11 @@ import java.util.Arrays;
 import numpy as np
 
 class Matrix:
-    #private static double EPSILON = 1E-6;
-    #int numberOfRows;
-    #int numberOfColumns;
-    #double[][] elements;
 
     def __init__(self, rowNumber, columnNumber, elements):
         self.numberOfRows = rowNumber
         self.numberOfColumns = columnNumber
         self.elements = elements
-        #print self.numberOfRows
-
 
     def getElements(self):
         return self.elements
@@ -44,11 +38,8 @@ class Matrix:
                 outputString += str(a.elements[i,j])
                 outputString += "\t"
             outputString += "]\n"
-
         outputString += "]\n"
-
         print outputString
-
 
     #pridruzivanje
     def makeEqualTo(self, B):
@@ -56,7 +47,6 @@ class Matrix:
         self.numberOfRows = B.getRowsCount()
         self.elements = np.array(B.getElements())
         return B
-
 
     def equals(self, obj):
         if (self == obj):
@@ -76,8 +66,6 @@ class Matrix:
             return False
         return True
 
-
-
     def getElement(self, row, column):
         if row >= self.getRowsCount() or column >= self.getColsCount():
             #throw new IndexOutOfBoundsException("Given index is outside matrix bounds.");
@@ -87,8 +75,6 @@ class Matrix:
             print "Index needs to be a positive number."
         test = self.elements[row,column]
         return self.elements[row,column]
-
-
 
     def setElement(self, row, column, value):
         if (row >= self.numberOfRows or column >= self.numberOfColumns):
@@ -100,11 +86,8 @@ class Matrix:
         self.elements[row, column] = value
         return self
 
-
-
     def getRowsCount(self):
         return self.numberOfRows
-
 
     def getColsCount(self):
         return self.numberOfColumns
@@ -116,7 +99,6 @@ class Matrix:
             print "Matrices are of different dimensions and cannot be added."
             return None
 
-
         #double [][] resultElements = new double[a.numberOfRows][a.numberOfColumns];
         resultElements = np.empty([a.numberOfRows, a.numberOfColumns], dtype=np.float64)
         for i in range(a.numberOfRows):
@@ -124,8 +106,6 @@ class Matrix:
                 #TODO upper or lower line?
                 #resultElements[i][j] = a.elements[i][j] + b.elements[i][j]
                 resultElements[i,j] = a.elements[i,j] + b.elements[i,j]
-
-
         resultMatrix = Matrix(a.numberOfRows, a.numberOfColumns, resultElements)
         return resultMatrix
 
@@ -163,7 +143,6 @@ class Matrix:
             for j in range(self.getColsCount() - 1, -1, -1):
                 self.setElement(i, j, self.getElement(i, j) - matrix.getElement(i, j))
         return self
-
 
     def multiply(self, matrix):
         #if (self.getColsCount() != matrix.getColsCount() || this.getRowsCount() != matrix.getRowsCount())
@@ -351,7 +330,6 @@ class Matrix:
 
     @staticmethod
     def invert(matrixToInvert):
-
         #Ax = prvi stupac jedinicne
         #=> x je prvi stupac invertirane, itd. za svaki stupac
 
@@ -380,3 +358,7 @@ class Matrix:
         finalInvertedMatrix = Matrix(matrixToInvert.getRowsCount(), matrixToInvert.getColsCount(), elementsOfFinalInvertedMatrix)
         return finalInvertedMatrix
 
+    @staticmethod
+    def reflect(xc, xh, alpha):
+        return Matrix.subtract(Matrix.scalarMultiply(xc, (1 + alpha)), Matrix.scalarMultiply(xh, alpha))
+        # return (1 + alpha) * xc - alpha * xh;
