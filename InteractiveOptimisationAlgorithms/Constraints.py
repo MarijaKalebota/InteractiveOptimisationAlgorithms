@@ -23,4 +23,4 @@ class ImplicitConstraint1(IConstraint):
         if(self.is_satisfied(point)):
             return point.getElement(0,1) - point.getElement(0,0)
         else:
-            return float('inf')
+            return float('-inf')
