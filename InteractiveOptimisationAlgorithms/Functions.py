@@ -212,3 +212,45 @@ class F4xcosx(AbstractFunction):
 
     def valueAtDerivativeByX2ThenX2(self, point):
         return 0
+
+class F2(AbstractFunction):
+
+    def __init__(self):
+        # super.__init__()
+        AbstractFunction.__init__(self)
+
+    def valueAt(self, point):
+        # if isinstance(args[0], np.float64):
+        #     return self.__valueAtPoint(*args)
+        # elif isinstance(args[0], int):
+        #     return self.__valueAtPoint(*args)
+        # elif isinstance(args[0], Matrix):
+        #     return self.__valueAtMatrix(*args)
+        self.increment()
+        if (point.getColsCount() != 2):
+            raise ValueError("Point must be two-dimensional.")
+        #return Math.pow(point.getElement(0, 0) - 4, 2) + 4 * Math.pow(point.getElement(0, 1) - 2, 2);
+        return (point.getElement(0, 0) - 4)**2 + 4 * (point.getElement(0, 1) - 2)**2
+    '''
+    def valueAt(self, point, t):
+        return 0
+    '''
+
+    #TODO the following is incorrect
+    def valueAtDerivativeByX1(self, point):
+        return 0
+
+    def valueAtDerivativeByX2(self, point):
+        return 0
+
+    def valueAtDerivativeByX1ThenX1(self, point):
+        return 0
+
+    def valueAtDerivativeByX1ThenX2(self, point):
+        return 0
+
+    def valueAtDerivativeByX2ThenX1(self, point):
+        return 0
+
+    def valueAtDerivativeByX2ThenX2(self, point):
+        return 0
