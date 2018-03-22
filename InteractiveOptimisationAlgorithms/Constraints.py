@@ -24,3 +24,16 @@ class ImplicitConstraint1(IConstraint):
             return point.getElement(0,1) - point.getElement(0,0)
         else:
             return float('-inf')
+
+class ImplicitConstraint2(IConstraint):
+    def is_satisfied(self, point):
+        if(2 - point.getElement(0,0) >= 0):
+            return True
+        else:
+            return False
+
+    def value_at(self, point):
+        if(self.is_satisfied(point)):
+            return 2 - point.getElement(0,0)
+        else:
+            return float('-inf')
