@@ -1,3 +1,5 @@
+import random
+from Matrix import *
 from Functions import *
 from Drawing import *
 
@@ -248,3 +250,122 @@ class HookeJeeves(IAlgorithm):
         output = open('HookeJeevesOutput.txt', 'w')
         output.write(outputString)
         return xb, logger
+
+
+class BoxAlgorithm(IAlgorithm):
+
+    def __init__(self, function, lower_bounds, upper_bounds, implicit_constraints, epsilon, alpha, print_me):
+        self.function = function
+        self.lower_bounds = lower_bounds
+        self.upper_bounds = upper_bounds
+        self.implicit_constraints = implicit_constraints
+        self.epsilon = epsilon
+        self.alpha = alpha
+        self.print_me = print_me
+
+    def run(self, point):
+        for i in range(len(point.getElements())):
+            if(point.getElement(0, i) < self.lower_bounds[i] or point.getElement(0, i) > self.upper_bounds[i]):
+                print "Ponudili ste tocku koja ne zadovoljava eksplicitna ogranicenja!"
+                return
+
+        n = point.getColsCount()
+
+        centroid = Matrix.copyPoint(point)
+
+        list_of_accepted_points = []
+
+        list_of_accepted_points.append(point)
+
+        for t in range(2*n):
+            #elements = new double[1][point.getColsCount()];
+            #elements = []
+            #elements1 = np.array([[-1.9, 2]])
+            elements = np.zeros((1, point.getColsCount()))
+            for i in range(point.getColsCount()):
+                #double R = ThreadLocalRandom.current().nextDouble(0, 1);
+                R = random.uniform(0, 1)
+                #elements[0][i] = lower_bounds[i] + R * (upper_bounds[i] - lower_bounds[i])
+                #elements.append( [ lower_bounds[i] + R * (upper_bounds[i] - lower_bounds[i]) ] )
+                #elements[0][i] = [self.lower_bounds[i] + R * (self.upper_bounds[i] - self.lower_bounds[i])]
+                elements[0][i] = self.lower_bounds[i] + R * (self.upper_bounds[i] - self.lower_bounds[i])
+
+            new_point = Matrix(1, point.getColsCount(), elements)
+            for j in range(len(self.implicit_constraints)):
+                while (not self.implicit_constraints[j].is_satisfied(new_point)):
+                    new_point = Matrix.scalarMultiply(Matrix.add(new_point,centroid),0.5)
+
+            list_of_accepted_points.append(new_point)
+
+            #calculate new centroid (with new accepted point)
+            #double[][] sum_elements = new double[1][point.getColsCount()];
+            #sum_elements = []
+            sum_elements = np.zeros((1, point.getColsCount()))
+            #for i in range(len(sum_elements[0])):
+            #for i in range(len(sum_elements[0])):
+                #sum_elements[0][i] = 0
+                #sum_elements.append([0])
+
+            sum = Matrix(1, point.getColsCount(), sum_elements)
+            for i in range(len(list_of_accepted_points)):
+                sum = Matrix.add(sum, list_of_accepted_points[i])
+            #centroid = sum/(simplex.length - 2);
+            centroid = Matrix.scalarMultiply(sum, (1.0/len(list_of_accepted_points)))
+
+        keepGoing = True
+        iteration = 1
+        while(keepGoing):
+            MIN = float('-inf')
+            max = MIN
+            valueAtXh = MIN
+            valueAtXh2 = MIN
+            xhIndex = 0
+            xh2Index = 0
+            for i in range(len(list_of_accepted_points)):
+                #if(function.valueAt(i) > function.valueAt(xhIndex)){
+                if(self.function.valueAt(list_of_accepted_points[i]) > self.function.valueAt(list_of_accepted_points[xhIndex])):
+                    xh2Index = xhIndex
+                    xhIndex = i
+
+            #calculate centroid without xh
+            #double[][] sum_elements = new double[1][point.getColsCount()];
+            #sum_elements = []
+            sum_elements = np.zeros((1, point.getColsCount()))
+            sum = Matrix(1, point.getColsCount(), sum_elements)
+            #for (int i = 0; i < list_of_accepted_points.size(); i++) {
+            for i in range(len(list_of_accepted_points)):
+                if( i == xhIndex):
+                    pass
+                else:
+                    sum = Matrix.add(sum, list_of_accepted_points[i])
+
+            centroid = Matrix.scalarMultiply(sum, (1.0/(len(list_of_accepted_points) - 1)))
+            xr = Matrix.reflect(centroid,list_of_accepted_points[xhIndex], self.alpha)
+            for i in range(n):
+                if(xr.getElement(0,i) < self.lower_bounds[i]):
+                    xr.getElements()[0][i] = self.lower_bounds[i]
+                elif(xr.getElements()[0][i] > self.upper_bounds[i]):
+                    xr.getElements()[0][i] = self.upper_bounds[i]
+
+            for i in range(len(self.implicit_constraints)):
+                while (not self.implicit_constraints[i].is_satisfied(xr)):
+                    xr = Matrix.scalarMultiply(Matrix.add(xr,centroid),0.5)
+
+            if(self.function.valueAt(xr) > self.function.valueAt(list_of_accepted_points[xh2Index])):
+                xr = Matrix.scalarMultiply(Matrix.add(xr,centroid),0.5)
+
+            #Matrix[] arrayPrihvacenihTocaka = list_of_accepted_points.toArray(new Matrix[]{});
+            arrayPrihvacenihTocaka = list_of_accepted_points
+            arrayPrihvacenihTocaka[xhIndex] = xr
+            #list_of_accepted_points = new LinkedList<Matrix>();
+            list_of_accepted_points = []
+            for i in range(len(arrayPrihvacenihTocaka)):
+                list_of_accepted_points.append(arrayPrihvacenihTocaka[i])
+
+            keepGoing = False
+            for i in range(len(list_of_accepted_points)):
+                if(abs(self.function.valueAt(list_of_accepted_points[i]) - self.function.valueAt(centroid)) > self.epsilon):
+                    keepGoing = True
+            iteration = iteration + 1
+
+        return centroid
