@@ -36,9 +36,9 @@ def main():
     box_algorithm = BoxAlgorithm(f11, donjeGranice, gornjeGranice, implicitnaOgranicenja, EPSILON, ALPHA, PRINT)
     box_algorithm2 = BoxAlgorithm(f21, donjeGranice, gornjeGranice, implicitnaOgranicenja, EPSILON, ALPHA, PRINT)
 
-    rjesenjePoBoxu1 = box_algorithm.run(tocka11)
+    rjesenjePoBoxu1, logger1 = box_algorithm.run(tocka11)
     #rjesenjePoBoxu2 = BoxAlgorithm.run(f21,tocka21,donjeGranice.clone(),gornjeGranice.clone(),implicitnaOgranicenja,EPSILON,ALPHA,PRINT)
-    rjesenjePoBoxu2 = box_algorithm2.run(tocka21)
+    rjesenjePoBoxu2, logger2 = box_algorithm2.run(tocka21)
 
     print "\n\n"
     print "Rjesenje po Boxu za f1: "

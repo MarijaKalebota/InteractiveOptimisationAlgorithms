@@ -264,6 +264,7 @@ class BoxAlgorithm(IAlgorithm):
         self.print_me = print_me
 
     def run(self, point):
+        additional_info = {}
         for i in range(len(point.getElements())):
             if(point.getElement(0, i) < self.lower_bounds[i] or point.getElement(0, i) > self.upper_bounds[i]):
                 print "Ponudili ste tocku koja ne zadovoljava eksplicitna ogranicenja!"
@@ -313,7 +314,8 @@ class BoxAlgorithm(IAlgorithm):
             centroid = Matrix.scalarMultiply(sum, (1.0/len(list_of_accepted_points)))
 
         keepGoing = True
-        iteration = 1
+        iteration_number = 1
+        logger = Logger(self.function)
         while(keepGoing):
             MIN = float('-inf')
             max = MIN
@@ -366,6 +368,30 @@ class BoxAlgorithm(IAlgorithm):
             for i in range(len(list_of_accepted_points)):
                 if(abs(self.function.valueAt(list_of_accepted_points[i]) - self.function.valueAt(centroid)) > self.epsilon):
                     keepGoing = True
-            iteration = iteration + 1
 
-        return centroid
+
+            #TODO check if this is the correct place to log the additional_info points
+
+            xhDescription = "xh - The point in which the function value is highest"
+            xrDescription = "xr - Reflected point"
+            xcDescription = "xc - Centroid"
+
+            xhTuple = (list_of_accepted_points[xhIndex], xhDescription)
+            xrTuple = (xr, xrDescription)
+            xcTuple = (centroid, xcDescription)
+
+            additional_info["xh"] = xhTuple
+            additional_info["xr"] = xrTuple
+            additional_info["xc"] = xcTuple
+
+            # currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additional_info)
+            # currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additional_info)
+            if (centroid.getColsCount() == 1):
+                currentIteration = Iteration(iteration_number, self.f.valueAt(centroid), centroid.getElement(0, 0), additional_info)
+            elif (centroid.getColsCount() == 2):
+                currentIteration = Iteration(iteration_number, self.f.valueAt(centroid), centroid, additional_info)
+            logger.addIteration(currentIteration)
+
+            iteration_number = iteration_number + 1
+
+        return centroid, logger
