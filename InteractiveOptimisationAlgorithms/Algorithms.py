@@ -387,9 +387,9 @@ class BoxAlgorithm(IAlgorithm):
             # currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additional_info)
             # currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additional_info)
             if (centroid.getColsCount() == 1):
-                currentIteration = Iteration(iteration_number, self.f.valueAt(centroid), centroid.getElement(0, 0), additional_info)
+                currentIteration = Iteration(iteration_number, self.function.valueAt(centroid), centroid.getElement(0, 0), additional_info)
             elif (centroid.getColsCount() == 2):
-                currentIteration = Iteration(iteration_number, self.f.valueAt(centroid), centroid, additional_info)
+                currentIteration = Iteration(iteration_number, self.function.valueAt(centroid), centroid, additional_info)
             logger.addIteration(currentIteration)
 
             iteration_number = iteration_number + 1
