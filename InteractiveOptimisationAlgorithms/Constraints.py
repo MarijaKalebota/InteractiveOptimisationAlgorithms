@@ -20,10 +20,7 @@ class ImplicitConstraint1(IConstraint):
             return False
 
     def value_at(self, point):
-        if(self.is_satisfied(point)):
-            return point.getElement(0,1) - point.getElement(0,0)
-        else:
-            return float('-inf')
+        return point.getElement(0,1) - point.getElement(0,0)
 
 class ImplicitConstraint2(IConstraint):
     def is_satisfied(self, point):

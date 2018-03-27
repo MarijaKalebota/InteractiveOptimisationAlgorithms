@@ -48,6 +48,7 @@ class Logger(object):
     def __init__(self, f):
         self.f = f
         self.iterations = []
+        self.constraints = []
 
     def addIteration(self, iteration):
         self.iterations.append(iteration)
@@ -63,6 +64,15 @@ class Logger(object):
 
     def getFunction(self):
         return self.f;
+
+    def addConstraint(self, constraint):
+        self.constraints.append(constraint)
+
+    def getConstraints(self):
+        return self.constraints
+
+    def setConstraints(self, constraints):
+        self.constraints = constraints
 
     def printLogToFile(self, file):
         #TODO
@@ -312,7 +322,6 @@ class Drawer:
 
 
     def drawAnimation3D(self, min_X1, max_X1, min_X2, max_X2, number_of_samples_of_domain):#, interactive):
-        #raise NotImplementedError
         '''
         if(interactive):
             %matplotlib notebook
@@ -321,7 +330,7 @@ class Drawer:
             '''
         function = self.logger.getFunction()
 
-        # Create fixed arrays for graph
+        #region Create fixed arrays for graph
         X1_for_graph_before_meshgrid = np.linspace(min_X1, max_X1, number_of_samples_of_domain)
         X2_for_graph_before_meshgrid = np.linspace(min_X2, max_X2, number_of_samples_of_domain)
 
@@ -334,8 +343,9 @@ class Drawer:
                 matrix_x1_x2 = Matrix(1, 2, elements)
                 Z.append(function.valueAt(matrix_x1_x2))
             Z_for_graph.append(Z)
+        #endregion
 
-        # Create fixed arrays for data from logger
+        #region Create fixed arrays for data from logger
         playMaxOfInterval = 0
         X1_from_logger = []
         X2_from_logger = []
@@ -346,8 +356,9 @@ class Drawer:
             X1_from_logger.append(iteration.x1Value)
             X2_from_logger.append(iteration.x2Value)
             Z_from_logger.append(iteration.yValue)
+        #endregion
 
-        # Create and link widgets
+        #region Create and link widgets
         w = widgets.IntSlider(min=0, max=playMaxOfInterval - 1, step=1, value=0)
         play = widgets.Play(
             value=0,
@@ -368,8 +379,9 @@ class Drawer:
         nextButton.on_click(on_nextButton_clicked)
         previousButton.on_click(on_previousButton_clicked)
         widgets.jslink((play, 'value'), (w, 'value'))
+        #endregion
 
-        # Define function for drawing the whole graph and a single point from the logger
+        #region Define function for drawing the whole graph and a single point from the logger
         def f(iteration_number, cmap):
             plt.clf()
             plt.close('all')
@@ -385,15 +397,16 @@ class Drawer:
             # plt.plot([-1.9], [2.0], 'b')
             ax.set_xlabel('x1')
             ax.set_ylabel('x2')
-            ax.set_zlabel('z');
+            ax.set_zlabel('z')
 
             # Plot single point depending on the iteration
             ax.plot([X1_from_logger[iteration_number]], [X2_from_logger[iteration_number]], [Z_from_logger[iteration_number]],
                     markerfacecolor='k', markeredgecolor='k', marker='o', markersize=5, alpha=1)
             #ax.scatter(X1_from_logger, X2_from_logger, Z_from_logger, c='g', marker='^')
             plt.show()
+        #endregion
 
-        # Define cmap choices
+        #region Define cmap choices
         cmap_choices = {
             'Accent': 'Accent',
             'Accent_r': 'Accent_r'}#,
@@ -406,10 +419,128 @@ class Drawer:
             'BuGn' : 'BuGn',
             'BuGn_r' : 'BuGn_r'
         }'''
+        #endregion
 
-        # Call the function interactively
+        #region Call the function interactively
         interact(f, iteration_number=w, cmap = cmap_choices)
-        # Display remaining widgets
+        #endregion
+        #region Display remaining widgets
         display(play)
         display(previousButton)
         display(nextButton)
+        #endregion
+
+    def drawAnimationContourWithConstraints(self, min_X1, max_X1, min_X2, max_X2, number_of_samples_of_domain):
+        function = self.logger.getFunction()
+
+        # region Create fixed arrays for graph
+        X1_for_graph_before_meshgrid = np.linspace(min_X1, max_X1, number_of_samples_of_domain)
+        X2_for_graph_before_meshgrid = np.linspace(min_X2, max_X2, number_of_samples_of_domain)
+
+        X1_for_graph, X2_for_graph = np.meshgrid(X1_for_graph_before_meshgrid, X2_for_graph_before_meshgrid)
+        Z_for_graph = []
+        for x2 in X2_for_graph_before_meshgrid:
+            Z = []
+            for x1 in X1_for_graph_before_meshgrid:
+                elements = np.array([[x1, x2]])
+                matrix_x1_x2 = Matrix(1, 2, elements)
+                Z.append(function.valueAt(matrix_x1_x2))
+            Z_for_graph.append(Z)
+        # endregion
+
+        # region Create fixed arrays for data from logger
+        playMaxOfInterval = 0
+        X1_from_logger = []
+        X2_from_logger = []
+        Z_from_logger = []
+
+        for iteration in self.logger.getIterations():
+            playMaxOfInterval = playMaxOfInterval + 1
+            X1_from_logger.append(iteration.x1Value)
+            X2_from_logger.append(iteration.x2Value)
+            Z_from_logger.append(iteration.yValue)
+        # endregion
+
+        # region Create and link widgets
+        w = widgets.IntSlider(min=0, max=playMaxOfInterval - 1, step=1, value=0)
+        play = widgets.Play(
+            value=0,
+            min=0,
+            max=playMaxOfInterval,
+            step=1,
+            description="Press play",
+            disabled=False
+        )
+        nextButton = widgets.Button(description="Next")
+        previousButton = widgets.Button(description="Previous")
+
+        def on_nextButton_clicked(x):
+            if (play.value < play.max):
+                play.value += 1
+
+        def on_previousButton_clicked(x):
+            if (play.value > 0):
+                play.value -= 1
+
+        nextButton.on_click(on_nextButton_clicked)
+        previousButton.on_click(on_previousButton_clicked)
+        widgets.jslink((play, 'value'), (w, 'value'))
+        # endregion
+
+        #region Define function for drawing the whole graph and a single point from the logger
+        def f(iteration_number, cmap, colorbar, plot_constraints):
+            plt.clf()
+            plt.close('all')
+            plt.figure(iteration_number)
+            #ax = plt.axes(projection='3d')
+            contours = plt.contour(X1_for_graph, X2_for_graph, Z_for_graph, 3, colors='black')
+
+            #region Plot fixed graph
+            if(colorbar):
+                plt.clabel(contours, inline=True, fontsize=8)
+                #plt.imshow(Z, extent=[0, 5, 0, 5], origin='lower', cmap=cmap, alpha=0.5)
+                plt.imshow(Z_for_graph, extent=[0, 5, 0, 5], origin='lower', cmap='Greens', alpha=0.5)
+                plt.colorbar();
+            #endregion
+
+            # region Plot constraints
+            if(plot_constraints):
+                plt.clabel(contours, inline=True, fontsize=8)
+                plt.imshow(Z, extent=[0, 5, 0, 5], origin='lower', cmap='Reds', alpha=0.5)
+                plt.colorbar();
+
+            # endregion
+
+            #region Plot single point depending on the iteration
+            contours.plot([X1_from_logger[iteration_number]], [X2_from_logger[iteration_number]], [Z_from_logger[iteration_number]],
+                    markerfacecolor='k', markeredgecolor='k', marker='o', markersize=5, alpha=1)
+            #ax.scatter(X1_from_logger, X2_from_logger, Z_from_logger, c='g', marker='^')
+            #endregion
+
+            plt.show()
+        #endregion
+
+        #region Define cmap choices
+        cmap_choices = {
+            'RdGy': 'RdGy',
+            'PiYG': 'PiYG',
+            'hsv': 'hsv'}#,
+
+        '''
+            'Blues': 'Blues',
+            'Blues_r': 'Blues_r',
+            'BrBG' : 'BrBG',
+            'BrBG_r' : 'BrBG_r',
+            'BuGn' : 'BuGn',
+            'BuGn_r' : 'BuGn_r'
+        }'''
+        #endregion
+
+        #region Call the function interactively
+        interact(f, iteration_number=w, cmap = cmap_choices, colorbar = True, plot_constraints = False)
+        #endregion
+        #region Display remaining widgets
+        display(play)
+        display(previousButton)
+        display(nextButton)
+        #endregion
