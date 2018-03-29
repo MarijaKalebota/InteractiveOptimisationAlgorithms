@@ -1,4 +1,4 @@
-from Matrix import *
+#from Matrix import *
 
 class IConstraint(object):
 
@@ -11,6 +11,15 @@ class IConstraint(object):
     def get_gradient(self):
         raise NotImplementedError
 
+class ExplicitConstraint(IConstraint):
+    def __init__(self, lower_bound, upper_bound):
+        self.lower_bound = lower_bound
+        self.upper_bound = upper_bound
+
+    def is_satisfied(self, point):
+        raise NotImplementedError
+    def value_at(self, point):
+        raise NotImplementedError
 
 class ImplicitConstraint1(IConstraint):
     def is_satisfied(self, point):
@@ -30,7 +39,4 @@ class ImplicitConstraint2(IConstraint):
             return False
 
     def value_at(self, point):
-        if(self.is_satisfied(point)):
-            return 2 - point.getElement(0,0)
-        else:
-            return float('-inf')
+        return 2 - point.getElement(0,0)
