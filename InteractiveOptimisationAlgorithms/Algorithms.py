@@ -316,7 +316,7 @@ class BoxAlgorithm(IAlgorithm):
         keepGoing = True
         iteration_number = 1
         logger = Logger(self.function)
-        logger.setConstraints(self.implicit_constraints)
+        logger.setInequalityImplicitConstraints(self.implicit_constraints)
         while(keepGoing):
             MIN = float('-inf')
             max = MIN

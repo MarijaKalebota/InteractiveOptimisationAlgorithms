@@ -48,7 +48,9 @@ class Logger(object):
     def __init__(self, f):
         self.f = f
         self.iterations = []
-        self.constraints = []
+        self.explicit_constraints = []
+        self.equality_implicit_constraints = []
+        self.inequality_implicit_constraints = []
 
     def addIteration(self, iteration):
         self.iterations.append(iteration)
@@ -65,14 +67,32 @@ class Logger(object):
     def getFunction(self):
         return self.f;
 
-    def addConstraint(self, constraint):
-        self.constraints.append(constraint)
+    def addInequalityImplicitConstraint(self, constraint):
+        self.inequality_implicit_constraints.append(constraint)
 
-    def getConstraints(self):
-        return self.constraints
+    def getInequalityImplicitConstraints(self):
+        return self.inequality_implicit_constraints
 
-    def setConstraints(self, constraints):
-        self.constraints = constraints
+    def setInequalityImplicitConstraints(self, constraints):
+        self.inequality_implicit_constraints = constraints
+
+    def addEqualityImplicitConstraint(self, constraint):
+        self.equality_implicit_constraints.append(constraint)
+
+    def getEqualityImplicitConstraints(self):
+        return self.equality_implicit_constraints
+
+    def setEqualityImplicitConstraints(self, constraints):
+        self.equality_implicit_constraints = constraints
+
+    def addExplicitConstraint(self, constraint):
+        self.explicit_constraints.append(constraint)
+
+    def getExplicitConstraints(self):
+        return self.explicit_constraints
+
+    def setExplicitConstraints(self, constraints):
+        self.explicit_constraints = constraints
 
     def printLogToFile(self, file):
         #TODO
