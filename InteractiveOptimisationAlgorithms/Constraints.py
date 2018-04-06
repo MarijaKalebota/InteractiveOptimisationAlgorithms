@@ -41,7 +41,7 @@ class ImplicitConstraint2(IConstraint):
     def value_at(self, point):
         return 2 - point.getElement(0,0)
 
-class ImplicitConstraint3(IConstraint):
+class EqualityImplicitConstraint3(IConstraint):
     def is_satisfied(self, point):
         if (point.getElement(0, 1) - point.getElement(0, 0) + 1 == 0):
             return True
