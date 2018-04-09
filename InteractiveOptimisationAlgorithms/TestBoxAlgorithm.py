@@ -28,8 +28,8 @@ def main():
     #double[] donjeGranice = new double [] {-100,-100};
     donjeGranice = [-100, -100]
     gornjeGranice = [100, 100]
-    impOgr1 = ImplicitConstraint1()
-    impOgr2 = ImplicitConstraint2()
+    impOgr1 = InequalityImplicitConstraint1()
+    impOgr2 = InequalityImplicitConstraint2()
 
     implicitnaOgranicenja = [impOgr1,impOgr2]
 

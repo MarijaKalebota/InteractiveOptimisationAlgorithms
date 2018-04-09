@@ -16,12 +16,16 @@ class ExplicitConstraint(IConstraint):
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
 
-    def is_satisfied(self, point):
-        raise NotImplementedError
+    def is_satisfied(self, value):
+        if(value > self.upper_bound or value < self.lower_bound):
+            return False
+        else:
+            return True
+
     def value_at(self, point):
         raise NotImplementedError
 
-class ImplicitConstraint1(IConstraint):
+class InequalityImplicitConstraint1(IConstraint):
     def is_satisfied(self, point):
         if(point.getElement(0,1) - point.getElement(0,0) >= 0):
             return True
@@ -31,7 +35,7 @@ class ImplicitConstraint1(IConstraint):
     def value_at(self, point):
         return point.getElement(0,1) - point.getElement(0,0)
 
-class ImplicitConstraint2(IConstraint):
+class InequalityImplicitConstraint2(IConstraint):
     def is_satisfied(self, point):
         if(2 - point.getElement(0,0) >= 0):
             return True
@@ -50,3 +54,13 @@ class EqualityImplicitConstraint3(IConstraint):
 
     def value_at(self, point):
         return point.getElement(0, 1) - point.getElement(0, 0) + 1
+
+class EqualityImplicitConstraint4(IConstraint):
+    def is_satisfied(self, point):
+        if (point.getElement(0, 1) - point.getElement(0, 9) + 50 == 0):
+            return True
+        else:
+            return False
+
+    def value_at(self, point):
+        return point.getElement(0, 1) - point.getElement(0, 0) + 50
