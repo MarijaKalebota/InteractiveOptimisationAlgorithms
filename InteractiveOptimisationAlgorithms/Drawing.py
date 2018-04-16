@@ -30,19 +30,29 @@ def f(x):
 '''
 
 class Iteration():
-    def __init__(self, iterationNumber, yValue, xValue, additionalInfo):
-        self.iterationNumber = iterationNumber
-        self.yValue = yValue
-        #self.xValue = xValue
-        #if(isinstance(xValue, float)):
-        if (isinstance(xValue, numbers.Number)):
-            self.xValue = xValue
-            self.x1Value = xValue
-            self.x2Value = xValue
+    def __init__(self, iteration_number, y_value, x_value, additional_data):
+        self.iteration_number = iteration_number
+        self.y_value = y_value
+        #self.x_value = x_value
+        #if(isinstance(x_value, float)):
+        if (isinstance(x_value, numbers.Number)):
+            self.x_value = x_value
+            self.x1_value = x_value
+            self.x2_value = x_value
         else:
-            self.x1Value = xValue.getElements()[0,0]
-            self.x2Value = xValue.getElements()[0,1]
-        self.additionalInfo = additionalInfo
+            self.x1_value = x_value.getElements()[0, 0]
+            self.x2_value = x_value.getElements()[0, 1]
+        self.additional_data = additional_data
+
+    def get_additional_data(self):
+        return self.additional_data
+
+    def get_iteration_number(self):
+        return self.iteration_number
+
+
+
+
 
 class Logger(object):
     def __init__(self, f):
@@ -102,7 +112,7 @@ class Logger(object):
         #TODO
         '''
         for iteration in self.iterations:
-            for element in iteration.additionalInfo:
+            for element in iteration.additional_data:
                 if type(element[1] )
         outputString = outputString + str(xn.getElement(0, 0))
         for i in range(1, xn.getColsCount()):
@@ -126,10 +136,10 @@ class Drawer:
         arrayX = []
         arrayY = []
         '''
-        minX = self.logger.getIterations()[0].xValue
-        maxX = self.logger.getIterations()[0].xValue
-        minY = self.logger.getIterations()[0].yValue
-        maxY = self.logger.getIterations()[0].yValue
+        minX = self.logger.getIterations()[0].x_value
+        maxX = self.logger.getIterations()[0].x_value
+        minY = self.logger.getIterations()[0].y_value
+        maxY = self.logger.getIterations()[0].y_value
         '''
 
         for iteration in self.logger.getIterations():
@@ -137,14 +147,14 @@ class Drawer:
             # stvori polje ovih brojeva
             arrayX.append(iteration.xValue)
             '''
-            if(iteration.xValue < minX):
-                minX = iteration.xValue
-            if (iteration.xValue > maxX):
-                maxX = iteration.xValue
-            if (iteration.yValue < minY):
-                minY = iteration.yValue
-            if (iteration.yValue > maxY):
-                maxY = iteration.yValue
+            if(iteration.x_value < minX):
+                minX = iteration.x_value
+            if (iteration.x_value > maxX):
+                maxX = iteration.x_value
+            if (iteration.y_value < minY):
+                minY = iteration.y_value
+            if (iteration.y_value > maxY):
+                maxY = iteration.y_value
             '''
 
             arrayY.append(iteration.yValue)
@@ -228,13 +238,13 @@ class Drawer:
         for iteration in self.logger.getIterations():
             playMaxOfInterval = playMaxOfInterval + 1
             # stvori polje ovih brojeva
-            #poljeX.append(iteration.xValue)
-            #poljeX.append(iteration.xValue)
+            #poljeX.append(iteration.x_value)
+            #poljeX.append(iteration.x_value)
             poljeX.append(iteration.x1Value)
-            #poljeX.append(iteration.xValue.getElements()[0,0])
-            #poljeY.append(iteration.yValue)
+            #poljeX.append(iteration.x_value.getElements()[0,0])
+            #poljeY.append(iteration.y_value)
             poljeY.append(iteration.x2Value)
-            #poljeY.append(iteration.yValue)
+            #poljeY.append(iteration.y_value)
 
         '''
         print "PoljeX: "
