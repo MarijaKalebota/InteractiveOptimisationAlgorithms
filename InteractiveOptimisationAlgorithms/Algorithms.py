@@ -221,8 +221,8 @@ class HookeJeeves(IAlgorithm):
             additional_data["xp"] = xpTuple
             additional_data["xn"] = xnTuple
 
-            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additionalData)
-            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additionalData)
+            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additional_data)
+            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additional_data)
             if(xn.getColsCount() == 1):
                 currentIteration = Iteration(iterationNumber, self.f.valueAt(xn), xn.getElement(0, 0), additional_data)
             elif(xn.getColsCount() == 2):
