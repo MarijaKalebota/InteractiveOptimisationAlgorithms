@@ -177,7 +177,7 @@ class HookeJeeves(IAlgorithm):
         iterationNumber = 0
         logger = Logger(self.f)
         while (self.step > self.epsilon):
-            additionalInfo = {}
+            additional_data = {}
             #nadi xn
             if (self.print_me):
                 print "Iteration: " + str(iterationNumber + 1)
@@ -217,16 +217,16 @@ class HookeJeeves(IAlgorithm):
             xpTuple = (xp, xpDescription)
             xnTuple = (xn, xnDescription)
 
-            additionalInfo["xb"] = xbTuple
-            additionalInfo["xp"] = xpTuple
-            additionalInfo["xn"] = xnTuple
+            additional_data["xb"] = xbTuple
+            additional_data["xp"] = xpTuple
+            additional_data["xn"] = xnTuple
 
-            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additionalInfo)
-            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
+            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additionalData)
+            #currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additionalData)
             if(xn.getColsCount() == 1):
-                currentIteration = Iteration(iterationNumber, self.f.valueAt(xn), xn.getElement(0, 0), additionalInfo)
+                currentIteration = Iteration(iterationNumber, self.f.valueAt(xn), xn.getElement(0, 0), additional_data)
             elif(xn.getColsCount() == 2):
-                currentIteration = Iteration(iterationNumber, self.f.valueAt(xn), xn, additionalInfo)
+                currentIteration = Iteration(iterationNumber, self.f.valueAt(xn), xn, additional_data)
             logger.addIteration(currentIteration)
 
             if (self.f.valueAt(xn) < self.f.valueAt(xb)):
@@ -264,7 +264,7 @@ class BoxAlgorithm(IAlgorithm):
         self.print_me = print_me
 
     def run(self, point):
-        additional_info = {}
+        additional_data = {}
         for i in range(len(point.getElements())):
             if(point.getElement(0, i) < self.lower_bounds[i] or point.getElement(0, i) > self.upper_bounds[i]):
                 print "Ponudili ste tocku koja ne zadovoljava eksplicitna ogranicenja!"
@@ -371,7 +371,7 @@ class BoxAlgorithm(IAlgorithm):
                     keepGoing = True
 
 
-            #TODO check if this is the correct place to log the additional_info points
+            #TODO check if this is the correct place to log the additional_data points
 
             xhDescription = "xh - The point in which the function value is highest"
             xrDescription = "xr - Reflected point"
@@ -381,16 +381,16 @@ class BoxAlgorithm(IAlgorithm):
             xrTuple = (xr, xrDescription)
             xcTuple = (centroid, xcDescription)
 
-            additional_info["xh"] = xhTuple
-            additional_info["xr"] = xrTuple
-            additional_info["xc"] = xcTuple
+            additional_data["xh"] = xhTuple
+            additional_data["xr"] = xrTuple
+            additional_data["xc"] = xcTuple
 
-            # currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additional_info)
-            # currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additional_info)
+            # currentIteration = Iteration(iteracija, f.valueAt(xn), xn, additional_data)
+            # currentIteration = Iteration(iteracija, f.valueAt(xn), xn.getElement(0, 0), additional_data)
             if (centroid.getColsCount() == 1):
-                currentIteration = Iteration(iteration_number, self.function.valueAt(centroid), centroid.getElement(0, 0), additional_info)
+                currentIteration = Iteration(iteration_number, self.function.valueAt(centroid), centroid.getElement(0, 0), additional_data)
             elif (centroid.getColsCount() == 2):
-                currentIteration = Iteration(iteration_number, self.function.valueAt(centroid), centroid, additional_info)
+                currentIteration = Iteration(iteration_number, self.function.valueAt(centroid), centroid, additional_data)
             logger.addIteration(currentIteration)
 
             iteration_number = iteration_number + 1
