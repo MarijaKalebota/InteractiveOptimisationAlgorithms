@@ -19,11 +19,11 @@ def main():
     f22 = F2()
     elements1 = np.array([[-1.9, 2]])
     tocka11 =  Matrix(1,2,elements1)
-    tocka12 = Matrix.copyPoint(tocka11)
+    tocka12 = Matrix.copy_matrix(tocka11)
 
     elements2 = np.array([[0.1, 0.3]])
     tocka21 =  Matrix(1,2,elements2)
-    tocka22 =  Matrix.copyPoint(tocka21)
+    tocka22 =  Matrix.copy_matrix(tocka21)
 
     #double[] donjeGranice = new double [] {-100,-100};
     donjeGranice = [-100, -100]

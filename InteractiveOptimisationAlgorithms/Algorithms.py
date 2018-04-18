@@ -182,11 +182,11 @@ class HookeJeeves(IAlgorithm):
             if (self.print_me):
                 print "Iteration: " + str(iterationNumber + 1)
             for i in range(xn.getColsCount()):
-                plus = Matrix.copyPoint(xn)
+                plus = Matrix.copy_matrix(xn)
                 #TODO
                 #plus.getElements()[0][i] = plus.getElements()[0][i] + pomak;
                 plus.getElements()[0,i] = plus.getElements()[0,i] + self.step
-                minus = Matrix.copyPoint(xn)
+                minus = Matrix.copy_matrix(xn)
                 #TODO
                 #minus.getElements()[0][i] = minus.getElements()[0][i] - pomak;
                 minus.getElements()[0,i] = minus.getElements()[0,i] - self.step
@@ -232,14 +232,14 @@ class HookeJeeves(IAlgorithm):
             if (self.f.valueAt(xn) < self.f.valueAt(xb)):
                 xp = Matrix.subtract(Matrix.scalarMultiply(xn, 2), xb)
 
-                xb = Matrix.copyPoint(xn)
-                xn = Matrix.copyPoint(xp)
+                xb = Matrix.copy_matrix(xn)
+                xn = Matrix.copy_matrix(xp)
             else:
                 self.step = self.step * self.factor
                 if (self.print_me):
                     print "Changing step to " + str(self.step)
-                xp = Matrix.copyPoint(xb)
-                xn = Matrix.copyPoint(xp)
+                xp = Matrix.copy_matrix(xb)
+                xn = Matrix.copy_matrix(xp)
 
             iterationNumber = iterationNumber + 1
             outputString = outputString + str(xn.getElement(0,0))
@@ -272,7 +272,7 @@ class BoxAlgorithm(IAlgorithm):
 
         n = point.getColsCount()
 
-        centroid = Matrix.copyPoint(point)
+        centroid = Matrix.copy_matrix(point)
 
         list_of_accepted_points = []
 
