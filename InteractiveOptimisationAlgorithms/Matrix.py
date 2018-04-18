@@ -198,15 +198,15 @@ class Matrix:
         return d
 
     @staticmethod
-    def copyPoint(point):
-        '''copy = np.empty([point.getRowsCount()][point.getColsCount()], dtype= np.float64)
-        for i in range(point.getRowsCount()):
-            copy[i]=np.array(point.getElements()[i])
+    def copy_matrix(matrix):
+        '''copy = np.empty([matrix.getRowsCount()][matrix.getColsCount()], dtype= np.float64)
+        for i in range(matrix.getRowsCount()):
+            copy[i]=np.array(matrix.getElements()[i])
 
-        copyMatrix = Matrix(point.getRowsCount(), point.getColsCount(), copy)
+        copyMatrix = Matrix(matrix.getRowsCount(), matrix.getColsCount(), copy)
         return copyMatrix
         '''
-        return Matrix(point.getRowsCount(), point.getColsCount(), np.array(point.getElements()))
+        return Matrix(matrix.getRowsCount(), matrix.getColsCount(), np.array(matrix.getElements()))
 
     @staticmethod
     def forwardSubstitution(a, b):
@@ -251,7 +251,7 @@ class Matrix:
             #throw new IllegalArgumentException("Matrix must be square.");
             print "Matrix must be square."
         identityMatrixElements = Matrix.createIdentityMatrixElements(a.numberOfRows)
-        workingMatrix = Matrix.copyPoint(a)
+        workingMatrix = Matrix.copy_matrix(a)
         Matrix.printMatrix(workingMatrix)
         for i in range(a.numberOfRows - 1):
             if (lup):
@@ -333,7 +333,7 @@ class Matrix:
         #Ax = prvi stupac jedinicne
         #=> x je prvi stupac invertirane, itd. za svaki stupac
 
-        copyOfMatrixToInvert = Matrix.copyPoint(matrixToInvert)
+        copyOfMatrixToInvert = Matrix.copy_matrix(matrixToInvert)
         identityMatrixElements = Matrix.createIdentityMatrixElements(copyOfMatrixToInvert.getRowsCount()) #create identity matrix;
         identityMatrix = Matrix(copyOfMatrixToInvert.getRowsCount(), copyOfMatrixToInvert.getColsCount(), identityMatrixElements)
 
@@ -362,3 +362,37 @@ class Matrix:
     def reflect(xc, xh, alpha):
         return Matrix.subtract(Matrix.scalarMultiply(xc, (1 + alpha)), Matrix.scalarMultiply(xh, alpha))
         # return (1 + alpha) * xc - alpha * xh;
+
+class Point:
+    def __init__(self, number_of_dimensions, elements):
+        self.number_of_dimensions = number_of_dimensions
+        self.elements = elements
+        self.matrix = Matrix(number_of_rows = 1, number_of_columns = number_of_dimensions, elements = np.array([elements]))
+
+    def get_elements(self):
+        return self.elements
+
+    def get_value_at_dimension(self, index):
+        return Matrix.getElement(row = 0, column = index)
+
+    def set_value_at_dimension(self, index, new_value):
+        self.elements[index] = new_value
+        self.matrix = Matrix(number_of_rows = 1, number_of_columns = self.number_of_dimensions, elements = np.array([self.get_elements()]))
+
+    def get_number_of_dimensions(self):
+        return self.number_of_dimensions
+
+    @staticmethod
+    def copy_point(point):
+        new_elements = point.get_elements()
+        number_of_dimensions = point.get_number_of_dimensions()
+
+        new_point = Point(number_of_dimensions, new_elements)
+        return new_point
+
+    @staticmethod
+    def multiply_point_by_scalar(scalar, point):
+        raise NotImplementedError
+
+
+
