@@ -68,11 +68,11 @@ class Logger(object):
     def getIterations(self):
         return self.iterations
 
-    def getIteration(self, indexOfIterationToGet):
-        if(len(self.iterations) >= indexOfIterationToGet):
+    def getIteration(self, index):
+        if(len(self.iterations) >= index):
             return "Index out of range"
         else:
-            return self.iterations[indexOfIterationToGet]
+            return self.iterations[index]
 
     def getFunction(self):
         return self.f;
