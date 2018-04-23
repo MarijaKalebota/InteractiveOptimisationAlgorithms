@@ -367,29 +367,33 @@ class Point:
     def __init__(self, number_of_dimensions, elements):
         self.number_of_dimensions = number_of_dimensions
         self.elements = elements
-        self.matrix = Matrix(number_of_rows = 1, number_of_columns = number_of_dimensions, elements = np.array([elements]))
+        #self.matrix = Matrix(number_of_rows = 1, number_of_columns = number_of_dimensions, elements = np.array([elements]))
 
     def get_value_at_dimension(self, index):
-        return Matrix.getElement(row = 0, column = index)
+        return self.elements[index]
+        #return self.matrix.getElement(row = 0, column = index)
 
     def set_value_at_dimension(self, index, new_value):
         self.elements[index] = new_value
-        self.matrix = Matrix(number_of_rows = 1, number_of_columns = self.number_of_dimensions, elements = np.array([self.get_elements()]))
+        #self.matrix = Matrix(number_of_rows = 1, number_of_columns = self.number_of_dimensions, elements = np.array([self.get_elements()]))
 
     def get_number_of_dimensions(self):
         return self.number_of_dimensions
 
-    @staticmethod
-    def copy_point(point):
-        new_elements = point.get_elements()
-        number_of_dimensions = point.get_number_of_dimensions()
-
+    def copy_point(self):
+        new_elements = self.get_elements()
+        number_of_dimensions = self.get_number_of_dimensions()
         new_point = Point(number_of_dimensions, new_elements)
         return new_point
 
-    @staticmethod
-    def multiply_point_by_scalar(scalar, point):
-        raise NotImplementedError
+    def multiply_point_by_scalar(self, scalar):
+        new_point = self.copy_point()
+        number_of_dimensions_of_point = new_point.get_number_of_dimensions()
+
+        for i in range(len(number_of_dimensions_of_point)):
+            new_point.set_value_at_dimension(i, new_point.get_value_at_dimension(i) * scalar)
+
+        return new_point
 
 
 
