@@ -369,9 +369,6 @@ class Point:
         self.elements = elements
         self.matrix = Matrix(number_of_rows = 1, number_of_columns = number_of_dimensions, elements = np.array([elements]))
 
-    def get_elements(self):
-        return self.elements
-
     def get_value_at_dimension(self, index):
         return Matrix.getElement(row = 0, column = index)
 
