@@ -380,14 +380,14 @@ class Point:
     def get_number_of_dimensions(self):
         return self.number_of_dimensions
 
-    def copy_point(self):
+    def copy(self):
         new_elements = self.get_elements()
         number_of_dimensions = self.get_number_of_dimensions()
         new_point = Point(number_of_dimensions, new_elements)
         return new_point
 
-    def multiply_point_by_scalar(self, scalar):
-        new_point = self.copy_point()
+    def multiply_by_scalar(self, scalar):
+        new_point = self.copy()
         number_of_dimensions_of_point = new_point.get_number_of_dimensions()
 
         for i in range(len(number_of_dimensions_of_point)):
